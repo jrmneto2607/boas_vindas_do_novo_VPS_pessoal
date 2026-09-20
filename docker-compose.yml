@@ -9,4 +9,4 @@ services:
       DJANGO_DEBUG: ${DJANGO_DEBUG}
     volumes:
       - .:/app
-    command: python manage.py runserver 0.0.0.0:8000
+    command: gunicorn config.wsgi:application --bind 0.0.0.0:8000
