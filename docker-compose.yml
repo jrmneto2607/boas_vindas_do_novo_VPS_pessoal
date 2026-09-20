@@ -6,6 +6,7 @@ services:
     environment:
       DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
       DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS}
+      DJANGO_DEBUG: ${DJANGO_DEBUG}
     volumes:
       - .:/app
     command: python manage.py runserver 0.0.0.0:8000
