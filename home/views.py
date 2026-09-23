@@ -1,5 +1,20 @@
-from django.http import HttpResponse
+from django.shortcuts import render
+from .forms import IdeaSubmissionForm
+
 
 # Create your views here.
 def index(request):
-    return HttpResponse("Bem vindo a minha biblioteca de Projetos - atualizando automaticamente.")
+    if request.method == 'POST':
+        form = IdeaSubmissionForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            cleaned_data = form.cleaned_data
+
+    else:
+        form = IdeaSubmissionForm()
+
+    return render(
+        request, 
+        'home/index.html',
+        {'form': form}
+    )

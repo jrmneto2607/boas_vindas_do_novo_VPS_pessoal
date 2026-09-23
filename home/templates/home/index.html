@@ -1,0 +1,730 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="description"
+        content="Maflo Tech - Um espaço para transformar ideias em projetos colaborativos."
+    >
+
+    <title>Maflo Tech | Ideias que se transformam em projetos</title>
+
+    <link rel="stylesheet" href="{% static 'home/css/style.css' %}">
+    <script src="{% static 'home/js/home.js' %}" defer></script>
+</head>
+
+<body>
+
+    <header class="site-header">
+        <div class="container header-content">
+
+            <a href="/" class="logo">
+                MAFLO<span>TECH</span>
+            </a>
+
+            <nav class="main-navigation">
+                <a href="#inicio">Início</a>
+                <a href="#ideias">Ideias</a>
+                <a href="#projetos">Projetos</a>
+                <a href="#sobre">Sobre</a>
+            </nav>
+
+            <a href="#enviar-ideia" class="header-action">
+                Enviar uma ideia
+            </a>
+
+        </div>
+    </header>
+
+
+    <main>
+
+        <section class="hero" id="inicio">
+
+            <div class="container hero-content">
+
+                <div class="hero-text">
+
+                    <span class="hero-label">
+                        Desenvolvimento colaborativo
+                    </span>
+
+                    <h1>
+                        Ideias podem se transformar em
+                        <span>projetos reais.</span>
+                    </h1>
+
+                    <p class="hero-description">
+                        A Maflo Tech é um espaço para compartilhar ideias,
+                        reunir pessoas interessadas em tecnologia e transformar
+                        propostas em projetos de desenvolvimento abertos à
+                        colaboração.
+                    </p>
+
+                    <div class="hero-actions">
+
+                        <a href="#ideias" class="button button-primary">
+                            Explorar ideias
+                        </a>
+
+                        <a href="#enviar-ideia" class="button button-secondary">
+                            Enviar minha ideia
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <div class="hero-visual">
+
+                    <div class="hero-side-card">
+
+                        <span class="hero-side-card-label">
+                            UMA IDEIA
+                        </span>
+
+                        <h2>
+                            pode ser o começo de algo maior.
+                        </h2>
+
+                        <p>
+                            Compartilhe uma proposta, encontre colaboradores
+                            e acompanhe sua evolução até se tornar um projeto.
+                        </p>
+
+                        <div class="idea-flow">
+                            <span>Ideia</span>
+                            <span>→</span>
+                            <span>Colaboração</span>
+                            <span>→</span>
+                            <span>Projeto</span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <section class="about-section" id="sobre">
+            <div class="container">
+                <div class="about-layout">
+
+                    <div class="about-content">
+
+                        <div class="section-heading">
+                            <span class="section-line"></span>
+
+                            <span class="section-label">
+                                SOBRE A INICIATIVA
+                            </span>
+                        </div>
+
+                        <h2>
+                            Um espaço onde ideias podem encontrar
+                            pessoas dispostas a desenvolvê-las.
+                        </h2>
+
+                        <p>
+                            A Maflo Tech nasce com a proposta de reunir ideias para novos
+                            sistemas, aplicações e ferramentas, independentemente da
+                            linguagem de programação ou da tecnologia utilizada.
+                        </p>
+
+                        <p>
+                            Pessoas poderão enviar suas propostas, acompanhar ideias
+                            selecionadas e colaborar com projetos que estejam em
+                            desenvolvimento.
+                        </p>
+
+                    </div>
+
+                    <div class="about-visual" aria-hidden="true"></div>
+
+                </div>
+            </div>
+        </section>
+
+        <section class="featured-ideas" id="ideias">
+            <div class="container">
+
+                <div class="section-heading">
+                    <span class="section-line"></span>
+
+                    <span class="section-label">
+                        IDEIAS EM DESTAQUE
+                    </span>
+                </div>
+
+                <h2>
+                    Propostas que podem se transformar
+                    em novos projetos.
+                </h2>
+
+                <p class="section-description">
+                    Conheça algumas ideias selecionadas para desenvolvimento
+                    e colaboração dentro da Maflo Tech.
+                </p>
+                <div class="ideas-grid">
+
+                    <article class="idea-card">
+
+                        <h3 class="idea-title">
+                            Organizador de estudos inteligente
+                        </h3>
+
+                        <p class="idea-description">
+                            Uma plataforma para ajudar estudantes a organizar matérias,
+                            tarefas e períodos de estudo de forma simples e personalizada.
+                        </p>
+
+                        <div class="idea-actions">
+
+                            <a href="#" class="idea-button">
+                                <svg
+                                    width="18"
+                                    height="18"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    aria-hidden="true"
+                                >
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                    <polyline points="14 2 14 8 20 8"></polyline>
+                                </svg>
+
+                                PDF
+                            </a>
+
+                            <span class="idea-button idea-button-disabled" aria-disabled="true">
+                                <svg
+                                    width="18"
+                                    height="18"
+                                    viewBox="0 0 24 24"
+                                    fill="currentColor"
+                                    aria-hidden="true"
+                                >
+                                    <path d="M12 .7a12 12 0 0 0-3.79 23.39c.6.11.82-.26.82-.58v-2.24c-3.34.73-4.04-1.42-4.04-1.42-.55-1.39-1.34-1.76-1.34-1.76-1.09-.75.08-.73.08-.73 1.21.08 1.84 1.24 1.84 1.24 1.07 1.84 2.81 1.31 3.5 1 .11-.78.42-1.31.76-1.61-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23A11.5 11.5 0 0 1 12 6.48c1.02 0 2.04.14 3 .4 2.29-1.55 3.3-1.23 3.3-1.23.66 1.66.24 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.62-5.48 5.92.43.37.81 1.1.81 2.22v3.32c0 .32.22.7.82.58A12 12 0 0 0 12 .7z"></path>
+                                </svg>
+
+                                GITHUB
+                            </span>
+
+                        </div>
+
+                        <p class="idea-author">
+                            Autor da ideia:
+                            <span>DevAnon</span>
+                        </p>
+
+                    </article>
+
+                    <article class="idea-card">
+
+                        <h3 class="idea-title">
+                            Biblioteca pessoal de projetos
+                        </h3>
+
+                        <p class="idea-description">
+                            Uma aplicação para organizar projetos pessoais, registrar tecnologias
+                            utilizadas e acompanhar a evolução de cada desenvolvimento.
+                        </p>
+
+                        <div class="idea-actions">
+
+                            <a href="#" class="idea-button">
+                                <svg
+                                    width="18"
+                                    height="18"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    aria-hidden="true"
+                                >
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                    <polyline points="14 2 14 8 20 8"></polyline>
+                                </svg>
+
+                                PDF
+                            </a>
+
+                            <span class="idea-button idea-button-disabled" aria-disabled="true">
+                                <svg
+                                    width="18"
+                                    height="18"
+                                    viewBox="0 0 24 24"
+                                    fill="currentColor"
+                                    aria-hidden="true"
+                                >
+                                    <path d="M12 .7a12 12 0 0 0-3.79 23.39c.6.11.82-.26.82-.58v-2.24c-3.34.73-4.04-1.42-4.04-1.42-.55-1.39-1.34-1.76-1.34-1.76-1.09-.75.08-.73.08-.73 1.21.08 1.84 1.24 1.84 1.24 1.07 1.84 2.81 1.31 3.5 1 .11-.78.42-1.31.76-1.61-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23A11.5 11.5 0 0 1 12 6.48c1.02 0 2.04.14 3 .4 2.29-1.55 3.3-1.23 3.3-1.23.66 1.66.24 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.62-5.48 5.92.43.37.81 1.1.81 2.22v3.32c0 .32.22.7.82.58A12 12 0 0 0 12 .7z"></path>
+                                </svg>
+
+                                GITHUB
+                            </span>
+
+                        </div>
+
+                        <p class="idea-author">
+                            Autor da ideia:
+                            <span>CodeLab</span>
+                        </p>
+
+                    </article>
+
+                    <article class="idea-card">
+
+                        <h3 class="idea-title">
+                            Gerenciador de manutenção residencial
+                        </h3>
+
+                        <p class="idea-description">
+                            Uma aplicação para registrar manutenções da casa,
+                            organizar tarefas recorrentes e acompanhar serviços realizados.
+                        </p>
+
+                        <div class="idea-actions">
+
+                            <a href="#" class="idea-button">
+                                <svg
+                                    width="18"
+                                    height="18"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    aria-hidden="true"
+                                >
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                    <polyline points="14 2 14 8 20 8"></polyline>
+                                </svg>
+
+                                PDF
+                            </a>
+
+                            <span class="idea-button idea-button-disabled" aria-disabled="true">
+                                <svg
+                                    width="18"
+                                    height="18"
+                                    viewBox="0 0 24 24"
+                                    fill="currentColor"
+                                    aria-hidden="true"
+                                >
+                                    <path d="M12 .7a12 12 0 0 0-3.79 23.39c.6.11.82-.26.82-.58v-2.24c-3.34.73-4.04-1.42-4.04-1.42-.55-1.39-1.34-1.76-1.34-1.76-1.09-.75.08-.73.08-.73 1.21.08 1.84 1.24 1.84 1.24 1.07 1.84 2.81 1.31 3.5 1 .11-.78.42-1.31.76-1.61-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23A11.5 11.5 0 0 1 12 6.48c1.02 0 2.04.14 3 .4 2.29-1.55 3.3-1.23 3.3-1.23.66 1.66.24 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.62-5.48 5.92.43.37.81 1.1.81 2.22v3.32c0 .32.22.7.82.58A12 12 0 0 0 12 .7z"></path>
+                                </svg>
+
+                                GITHUB
+                            </span>
+
+                        </div>
+
+                        <p class="idea-author">
+                            Autor da ideia:
+                            <span>CasaLab</span>
+                        </p>
+
+                    </article>
+
+                    <article class="idea-card">
+
+                        <h3 class="idea-title">
+                            Agenda colaborativa para pequenos grupos
+                        </h3>
+
+                        <p class="idea-description">
+                            Uma ferramenta simples para organizar compromissos,
+                            tarefas compartilhadas e lembretes entre pequenos grupos.
+                        </p>
+
+                        <div class="idea-actions">
+
+                            <a href="#" class="idea-button">
+                                <svg
+                                    width="18"
+                                    height="18"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    aria-hidden="true"
+                                >
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                    <polyline points="14 2 14 8 20 8"></polyline>
+                                </svg>
+
+                                PDF
+                            </a>
+
+                            <span class="idea-button idea-button-disabled" aria-disabled="true">
+                                <svg
+                                    width="18"
+                                    height="18"
+                                    viewBox="0 0 24 24"
+                                    fill="currentColor"
+                                    aria-hidden="true"
+                                >
+                                    <path d="M12 .7a12 12 0 0 0-3.79 23.39c.6.11.82-.26.82-.58v-2.24c-3.34.73-4.04-1.42-4.04-1.42-.55-1.39-1.34-1.76-1.34-1.76-1.09-.75.08-.73.08-.73 1.21.08 1.84 1.24 1.84 1.24 1.07 1.84 2.81 1.31 3.5 1 .11-.78.42-1.31.76-1.61-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23A11.5 11.5 0 0 1 12 6.48c1.02 0 2.04.14 3 .4 2.29-1.55 3.3-1.23 3.3-1.23.66 1.66.24 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.62-5.48 5.92.43.37.81 1.1.81 2.22v3.32c0 .32.22.7.82.58A12 12 0 0 0 12 .7z"></path>
+                                </svg>
+
+                                GITHUB
+                            </span>
+
+                        </div>
+
+                        <p class="idea-author">
+                            Autor da ideia:
+                            <span>ColabLab</span>
+                        </p>
+
+                    </article>
+
+                    <article class="idea-card">
+
+                        <h3 class="idea-title">
+                            Controle simples de finanças pessoais
+                        </h3>
+
+                        <p class="idea-description">
+                            Uma aplicação para registrar receitas e despesas,
+                            organizar categorias e acompanhar o equilíbrio financeiro mensal.
+                        </p>
+
+                        <div class="idea-actions">
+
+                            <a href="#" class="idea-button">
+                                <svg
+                                    width="18"
+                                    height="18"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    aria-hidden="true"
+                                >
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                    <polyline points="14 2 14 8 20 8"></polyline>
+                                </svg>
+
+                                PDF
+                            </a>
+
+                            <span class="idea-button idea-button-disabled" aria-disabled="true">
+                                <svg
+                                    width="18"
+                                    height="18"
+                                    viewBox="0 0 24 24"
+                                    fill="currentColor"
+                                    aria-hidden="true"
+                                >
+                                    <path d="M12 .7a12 12 0 0 0-3.79 23.39c.6.11.82-.26.82-.58v-2.24c-3.34.73-4.04-1.42-4.04-1.42-.55-1.39-1.34-1.76-1.34-1.76-1.09-.75.08-.73.08-.73 1.21.08 1.84 1.24 1.84 1.24 1.07 1.84 2.81 1.31 3.5 1 .11-.78.42-1.31.76-1.61-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23A11.5 11.5 0 0 1 12 6.48c1.02 0 2.04.14 3 .4 2.29-1.55 3.3-1.23 3.3-1.23.66 1.66.24 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.62-5.48 5.92.43.37.81 1.1.81 2.22v3.32c0 .32.22.7.82.58A12 12 0 0 0 12 .7z"></path>
+                                </svg>
+
+                                GITHUB
+                            </span>
+
+                        </div>
+
+                        <p class="idea-author">
+                            Autor da ideia:
+                            <span>FinDev</span>
+                        </p>
+
+                    </article>
+
+                    <article class="idea-card">
+
+                        <h3 class="idea-title">
+                            Painel de acompanhamento de hábitos
+                        </h3>
+
+                        <p class="idea-description">
+                            Uma ferramenta para registrar hábitos diários,
+                            acompanhar frequência e visualizar a evolução ao longo do tempo.
+                        </p>
+
+                        <div class="idea-actions">
+
+                            <a href="#" class="idea-button">
+                                <svg
+                                    width="18"
+                                    height="18"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    aria-hidden="true"
+                                >
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                    <polyline points="14 2 14 8 20 8"></polyline>
+                                </svg>
+
+                                PDF
+                            </a>
+
+                            <span class="idea-button idea-button-disabled" aria-disabled="true">
+                                <svg
+                                    width="18"
+                                    height="18"
+                                    viewBox="0 0 24 24"
+                                    fill="currentColor"
+                                    aria-hidden="true"
+                                >
+                                    <path d="M12 .7a12 12 0 0 0-3.79 23.39c.6.11.82-.26.82-.58v-2.24c-3.34.73-4.04-1.42-4.04-1.42-.55-1.39-1.34-1.76-1.34-1.76-1.09-.75.08-.73.08-.73 1.21.08 1.84 1.24 1.84 1.24 1.07 1.84 2.81 1.31 3.5 1 .11-.78.42-1.31.76-1.61-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23A11.5 11.5 0 0 1 12 6.48c1.02 0 2.04.14 3 .4 2.29-1.55 3.3-1.23 3.3-1.23.66 1.66.24 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.62-5.48 5.92.43.37.81 1.1.81 2.22v3.32c0 .32.22.7.82.58A12 12 0 0 0 12 .7z"></path>
+                                </svg>
+
+                                GITHUB
+                            </span>
+
+                        </div>
+
+                        <p class="idea-author">
+                            Autor da ideia:
+                            <span>TrackMe</span>
+                        </p>
+
+                    </article>
+
+                </div>
+
+                <div class="ideas-footer">
+                    <a href="/ideias/" class="ideas-link">
+                        Ver todas as ideias
+                        <span aria-hidden="true">→</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section class="submit-idea-section" id="enviar-ideia">
+            <div class="container">
+
+                <div class="section-heading">
+                    <span class="section-line"></span>
+
+                    <span class="section-label">
+                        ENVIE UMA IDEIA
+                    </span>
+                </div>
+
+                <h2 class="submit-idea-title">
+                    Tem uma ideia? Compartilhe com a Maflo Tech.
+                </h2>
+
+                <p class="section-description">
+                    Não precisa estar pronta ou detalhada. Conte sua proposta
+                    de forma simples e nós podemos começar a partir dela.
+                </p>
+                
+                <form class="submit-idea-form" method="post"  enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <div class="form-group">
+                        <label for="author-name">
+                            Nome ou pseudônimo
+                        </label>
+
+                        <input
+                            type="text"
+                            id="author-name"
+                            name="author_name"
+                            value="{{ form.author_name.value|default_if_none:'' }}"
+                            placeholder="Como você quer ser identificado?"
+                            required
+                            
+                        >
+
+                        {% if form.author_name.errors %}
+                            <p class="form-source-error" role="alert">
+                                {{ form.author_name.errors.0 }}
+                            </p>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="idea-title">
+                            Título da ideia
+                        </label>
+
+                        <input
+                            type="text"
+                            id="idea-title"
+                            name="idea_title"
+                            value="{{ form.idea_title.value|default_if_none:'' }}"
+                            placeholder="Ex.: Aplicativo para organizar estudos"
+                            
+                        >
+
+                        {% if form.idea_title.errors %}
+                            <p class="form-source-error" role="alert">
+                                {{ form.idea_title.errors.0 }}
+                            </p>
+                        {% endif %}
+
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="idea-pdf">
+                            PDF da ideia
+                        </label>
+                        
+                        <div class="file-upload-row">
+                            <label class="file-upload-button" for="idea-pdf">
+                                <svg
+                                    width="18"
+                                    height="18"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    aria-hidden="true"
+                                >
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                    <polyline points="14 2 14 8 20 8"></polyline>
+                                </svg>
+
+                                <span class="file-upload-text">
+                                    Selecionar PDF
+                                </span>
+                            </label>
+                            
+                            <span class="file-upload-name">
+                                Nenhum PDF selecionado
+                            </span>
+                        </div>
+                        <input
+                            type="file"
+                            id="idea-pdf"
+                            name="idea_pdf"
+                            accept=".pdf,application/pdf"
+                        >
+
+                        {% if form.idea_pdf.errors %}
+                            <p class="form-source-error" role="alert">
+                                {{ form.idea_pdf.errors.0 }}
+                            </p>
+                        {% endif %}
+                    </div> 
+                    
+                    <fieldset class="optional-info-group">
+                        <legend>Informações opcionais</legend>
+                        
+                        <p class="optional-info-note">
+                            <span class="optional-info-highlight">INFO:</span>
+                            E-mail e celular serão usados apenas para contato e não serão exibidos publicamente.
+                        </p>
+
+                        <div class="form-group">
+                            <label for="idea-github">
+                                GitHub da ideia
+                            </label>
+
+                            <input
+                                type="url"
+                                id="idea-github"
+                                name="idea_github"
+                                value="{{ form.idea_github.value|default_if_none:'' }}"
+                                placeholder="https://github.com/usuario/repositorio"    
+                            >
+                        </div>
+
+                         {% if form.idea_github.errors %}
+                            <p class="form-source-error" role="alert">
+                                {{ form.idea_github.errors.0 }}
+                            </p>
+                        {% endif %}
+
+                        <div class="form-group">
+                            <label for="contact-email">
+                                E-mail para contato
+                            </label>
+
+                            <input
+                                type="email"
+                                id="contact-email"
+                                name="contact_email"
+                                value="{{ form.contact_email.value|default_if_none:'' }}"
+                                placeholder="seuemail@exemplo.com"
+                            >
+                            {% if form.contact_email.errors %}
+                                <p class="form-source-error" role="alert">
+                                    {{ form.contact_email.errors.0 }}
+                                </p>
+                            {% endif %}
+                           
+                        </div>
+
+                        <div class="form-group">
+                            <label for="contact-whatsapp" class="whatsapp-label">
+                                <svg
+                                    width="18"
+                                    height="18"
+                                    viewBox="0 0 24 24"
+                                    fill="currentColor"
+                                    aria-hidden="true"
+                                >
+                                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.198-.347.223-.644.074-.297-.148-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.009-.371-.011-.57-.011-.198 0-.52.074-.792.371-.272.297-1.04 1.016-1.04 2.479s1.065 2.875 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.262.489 1.693.625.712.227 1.36.195 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+                                    <path d="M12.004 2C6.477 2 2 6.477 2 12c0 1.762.46 3.414 1.258 4.85L2 22l5.287-1.227A9.955 9.955 0 0 0 12.004 22C17.526 22 22 17.523 22 12S17.526 2 12.004 2zm0 18.182a8.13 8.13 0 0 1-4.141-1.132l-.297-.176-3.139.729.747-3.059-.193-.313A8.13 8.13 0 0 1 3.82 12c0-4.515 3.67-8.182 8.184-8.182 4.513 0 8.178 3.667 8.178 8.182s-3.665 8.182-8.178 8.182z"/>
+                                </svg>
+
+                                Celular
+                            </label>
+
+                            <input
+                                type="tel"
+                                id="contact-whatsapp"
+                                name="contact_whatsapp"
+                                value="{{ form.contact_whatsapp.value|default_if_none:'' }}"
+                                placeholder="(11) 99999-9999"
+                            >
+                        </div>
+                    </fieldset>
+                    
+                    <p
+                        class="form-source-error"
+                        role="alert"
+                        {% if not form.non_field_errors %}hidden{% endif %}
+                    >
+                        {% if form.non_field_errors %}
+                            {{ form.non_field_errors.0 }}
+                        {% else %}
+                            Informe um PDF ou um link do GitHub para enviar sua ideia.
+                        {% endif %}
+                    </p>
+
+                    <div class="form-consent">
+                        <input
+                            type="checkbox"
+                            id="idea-consent"
+                            name="idea_consent"
+                            {% if form.idea_consent.value %}checked{% endif %}
+                            required
+                        >
+
+                        <label for="idea-consent">
+                            Declaro que sou responsável pela ideia enviada e autorizo a Maflo Tech
+                            a analisar, desenvolver e publicar esta proposta e seus derivados.
+                        </label>
+                    </div>
+
+                    <button type="submit" class="submit-idea-button">
+                        Enviar ideia
+                    </button>
+                </form>
+
+            </div>
+        </section>
+
+    </main>
+
+</body>
+</html>
