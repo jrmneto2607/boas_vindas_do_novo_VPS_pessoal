@@ -522,7 +522,14 @@
                     Não precisa estar pronta ou detalhada. Conte sua proposta
                     de forma simples e nós podemos começar a partir dela.
                 </p>
-                
+
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="form-message {{ message.tags }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
                 <form class="submit-idea-form" method="post"  enctype="multipart/form-data">
                     {% csrf_token %}
 

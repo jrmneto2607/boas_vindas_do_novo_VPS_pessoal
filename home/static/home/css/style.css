@@ -636,6 +636,21 @@ body {
     line-height: 1.5;
 }
 
+.form-message {
+    max-width: 720px;
+    margin: 24px 0 0;
+    padding: 12px 14px;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.form-message.success {
+    background: rgba(94, 234, 212, 0.08);
+    border-left: 3px solid #5eead4;
+    color: #99f6e4;
+}
+
 
 
 .form-consent {

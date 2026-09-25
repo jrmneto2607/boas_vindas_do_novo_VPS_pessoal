@@ -1,10 +1,12 @@
+from urllib.parse import urlparse
+
 from django import forms
 from django.core.validators import FileExtensionValidator
 
 class IdeaSubmissionForm(forms.Form):
 
-    author_name = forms.CharField(required=True)
-    idea_title = forms.CharField(required=True)
+    author_name = forms.CharField(required=True, max_length=100)
+    idea_title = forms.CharField(required=True, max_length=200)
 
     idea_pdf = forms.FileField(
         required=False,
@@ -15,12 +17,25 @@ class IdeaSubmissionForm(forms.Form):
             )
         ]
     )
-    idea_github = forms.URLField(required=False)
+    idea_github = forms.URLField(required=False, max_length=500)
 
-    contact_email = forms.EmailField(required=False)
-    contact_whatsapp = forms.CharField(required=False)
+    contact_email = forms.EmailField(required=False, max_length=254)
+    contact_whatsapp = forms.CharField(required=False, max_length=30)
 
     idea_consent = forms.BooleanField(required=True)
+
+    def clean_idea_github(self):
+        idea_github = self.cleaned_data.get("idea_github")
+
+        if idea_github:
+            hostname = urlparse(idea_github).hostname
+
+            if hostname != "github.com" and not hostname.endswith(".github.com"):
+                raise forms.ValidationError(
+                    "Informe um link válido do GitHub."
+                )
+
+        return idea_github
 
 
     def clean_idea_pdf(self):
