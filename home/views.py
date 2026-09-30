@@ -33,8 +33,14 @@ def index(request):
     else:
         form = IdeaSubmissionForm()
 
+    # Obter todas as ideias enviadas, ordenadas por data de criação (mais recentes primeiro)
+    ideas = IdeaSubmission.objects.all().order_by('-created_at', '-pk')
+
     return render(
         request, 
         'home/index.html',
-        {'form': form}
+        {
+            'form': form,
+            'ideas': ideas,
+        }
     )

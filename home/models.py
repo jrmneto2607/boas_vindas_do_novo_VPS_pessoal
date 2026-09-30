@@ -10,6 +10,7 @@ def idea_pdf_upload_path(instance, filename):
 class IdeaSubmission(models.Model):
     author_name = models.CharField(max_length=100)
     idea_title = models.CharField(max_length=200)
+    idea_description = models.TextField(blank=True, default="")
 
     idea_pdf = models.FileField(upload_to=idea_pdf_upload_path, blank=True, max_length=255)
     idea_github = models.URLField(max_length=500, blank=True)
@@ -24,3 +25,15 @@ class IdeaSubmission(models.Model):
     consent_accepted_at = models.DateTimeField(null=True, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
+
+    class Status(models.IntegerChoices):
+        EM_ANALISE = 1, 'Em análise'
+        EM_DESENVOLVIMENTO = 2, 'Em desenvolvimento'
+        CONCLUIDA = 3, 'Concluída'
+
+    status = models.PositiveSmallIntegerField(
+        choices=Status.choices,
+        default=Status.EM_ANALISE,
+    )
+
+    is_featured = models.BooleanField(default=False)
