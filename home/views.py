@@ -35,6 +35,8 @@ def index(request):
 
     # Obter todas as ideias enviadas, ordenadas por data de criação (mais recentes primeiro)
     ideas = IdeaSubmission.objects.all().order_by('-created_at', '-pk')
+    # Obter ideias em destaque, limitando a 6 ideias aleatórias
+    featured_ideas = IdeaSubmission.objects.order_by('?')[:6]
 
     return render(
         request, 
@@ -42,5 +44,6 @@ def index(request):
         {
             'form': form,
             'ideas': ideas,
+            'featured_ideas': featured_ideas,
         }
     )
