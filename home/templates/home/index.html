@@ -1,48 +1,15 @@
+{% extends "home/base.html" %}
 {% load static %}
 
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <meta
-        name="description"
-        content="Maflo Tech - Um espaço para transformar ideias em projetos colaborativos."
-    >
-
-    <title>Maflo Tech | Ideias que se transformam em projetos</title>
-
-    <link rel="stylesheet" href="{% static 'home/css/style.css' %}">
+{% block page_title %}Maflo Tech | Ideias que se transformam em projetos{% endblock %}
+{% block extra_head %}
+    <meta name="description" content="Maflo Tech - Um espaço para transformar ideias em projetos colaborativos.">
     <script src="{% static 'home/js/home.js' %}" defer></script>
-    <script src="{% static 'home/js/parallax.js' %}" defer></script>
-</head>
+{% endblock %}
+{% block ideas_navigation_url %}{% url 'home' %}#ideias{% endblock %}
+{% block messages %}{% endblock %}
+{% block content %}
 
-<body>
-
-    <header class="site-header">
-        <div class="container header-content">
-
-            <a href="/" class="logo">
-                MAFLO<span>TECH</span>
-            </a>
-
-            <nav class="main-navigation">
-                <a href="#inicio">Início</a>
-                <a href="#ideias">Ideias</a>
-                <a href="#projetos">Projetos</a>
-                <a href="#sobre">Sobre</a>
-            </nav>
-
-            <a href="#enviar-ideia" class="header-action">
-                Enviar uma ideia
-            </a>
-
-        </div>
-    </header>
-
-
-    <main>
 
         <section class="hero" id="inicio">
 
@@ -498,19 +465,5 @@
             </div>
         </section>
 
-    </main>
 
-    <footer class="site-footer">
-        <div class="container footer-content">
-            <a href="#inicio" class="footer-top-link">Voltar ao topo ↑</a>
-
-            <a href="#inicio" class="logo footer-logo">
-                MAFLO<span>TECH</span>
-            </a>
-
-            <p class="footer-copyright">© {% now "Y" %} Maflo Tech.</p>
-        </div>
-    </footer>
-
-</body>
-</html>
+{% endblock %}

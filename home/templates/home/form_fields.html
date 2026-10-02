@@ -1,0 +1,36 @@
+{% for error in form.non_field_errors %}
+    <p class="form-source-error" role="alert">{{ error }}</p>
+{% endfor %}
+
+{% for field in form %}
+    {% if field.is_hidden %}
+        {{ field }}
+        {% for error in field.errors %}
+            <p class="form-source-error" role="alert">{{ error }}</p>
+        {% endfor %}
+    {% else %}
+        {% if field.field.widget.input_type == "checkbox" %}
+            <div class="form-consent">
+                {{ field }}
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            </div>
+        {% else %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}
+                    <div class="account-help" id="{{ field.auto_id }}_helptext">
+                        {{ field.help_text }}
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %}
+        {% if field.errors %}
+            <div id="{{ field.auto_id }}_error" role="alert">
+                {% for error in field.errors %}
+                    <p class="form-source-error">{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endif %}
+{% endfor %}

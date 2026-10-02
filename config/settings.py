@@ -160,3 +160,11 @@ DEFAULT_FROM_EMAIL = os.environ.get(
     "DEFAULT_FROM_EMAIL",
     "Maflo Tech <noreply@maflo.tech>",
 )
+
+# Authentication settings
+LOGIN_URL = "login"
+LOGIN_REDIRECT_URL = "idea_list"
+LOGOUT_REDIRECT_URL = "idea_list"
+
+# Links de recuperação válidos por uma hora.
+PASSWORD_RESET_TIMEOUT = 60 * 60

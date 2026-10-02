@@ -1,0 +1,13 @@
+{% extends "home/ideas_base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<section class="account-section">
+    <div class="section-heading">
+        <span class="section-line"></span>
+        <span class="section-label">SUA CONTA</span>
+    </div>
+    <h1 class="submit-idea-title">{{ title }}</h1>
+    <p class="section-description">{{ notice }}</p>
+    <a href="{% url 'login' %}" class="submit-idea-button account-button-link">Ir para o login</a>
+</section>
+{% endblock %}

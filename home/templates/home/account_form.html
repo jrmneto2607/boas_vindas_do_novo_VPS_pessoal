@@ -1,26 +1,38 @@
 {% extends "home/ideas_base.html" %}
-
 {% block title %}{{ title }}{% endblock %}
-
 {% block content %}
-<section class="idea-detail">
-    <h1>{{ title }}</h1>
-
-    <form method="post">
+<section class="account-section">
+    <div class="section-heading">
+        <span class="section-line"></span>
+        <span class="section-label">SUA CONTA</span>
+    </div>
+    <h1 class="submit-idea-title">{{ title }}</h1>
+    <form class="submit-idea-form" method="post">
         {% csrf_token %}
-        {{ form.as_p }}
-
-        <button type="submit" class="idea-button">
-            {{ button_label }}
-        </button>
+        {% include "home/form_fields.html" %}
+        {% if next %}
+            <input type="hidden" name="next" value="{{ next }}">
+        {% endif %}
+        <div class="account-actions">
+            <button type="submit" class="submit-idea-button">{{ button_label }}</button>
+            {% if request.resolver_match.url_name == "login" %}
+                <a href="{% url 'password_reset' %}" class="account-secondary-button">Esqueci minha senha</a>
+            {% endif %}
+        </div>
+        {% if request.resolver_match.url_name == "login" and form.needs_email_confirmation %}
+            <a href="{% url 'resend_confirmation' %}" class="account-resend-button">
+                Reenviar confirmação
+            </a>
+        {% endif %}
     </form>
-
-    <p>
-        <a href="{% url 'register' %}">Criar conta</a>
-        ·
-        <a href="{% url 'resend_confirmation' %}">
-            Reenviar confirmação
-        </a>
-    </p>
+    <div class="account-links">
+        {% if request.resolver_match.url_name == "login" %}
+            <a href="{% url 'register' %}" class="account-text-link">Ainda não tenho uma conta.</a>
+        {% elif request.resolver_match.url_name == "register" %}
+            <a href="{% url 'login' %}" class="account-text-link">Já tenho uma conta.</a>
+        {% else %}
+            <a href="{% url 'login' %}" class="account-text-link">Voltar para entrar</a>
+        {% endif %}
+    </div>
 </section>
 {% endblock %}
