@@ -1,0 +1,57 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}Ideias{% endblock %} | Maflo Tech</title>
+
+    <link rel="stylesheet" href="{% static 'home/css/style.css' %}">
+    <script src="{% static 'home/js/parallax.js' %}" defer></script>
+</head>
+<body>
+    <header class="site-header" id="inicio">
+        <div class="container header-content">
+            <a href="{% url 'home' %}" class="logo">
+                MAFLO<span>TECH</span>
+            </a>
+
+            <nav class="main-navigation" aria-label="Navegação principal">
+                <a href="{% url 'home' %}">Início</a>
+                <a href="{% url 'idea_list' %}">Ideias</a>
+                <a href="{% url 'home' %}#sobre">Sobre</a>
+            </nav>
+
+            <a href="{% url 'home' %}#enviar-ideia" class="header-action">
+                Enviar uma ideia
+            </a>
+        </div>
+    </header>
+
+    <main class="container ideas-page">
+        {% if messages %}
+            <div aria-live="polite">
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-content">
+            <a href="#inicio" class="footer-top-link">Voltar ao topo ↑</a>
+
+            <a href="{% url 'home' %}" class="logo footer-logo">
+                MAFLO<span>TECH</span>
+            </a>
+
+            <p class="footer-copyright">
+                © {% now "Y" %} Maflo Tech.
+            </p>
+        </div>
+    </footer>
+</body>
+</html>

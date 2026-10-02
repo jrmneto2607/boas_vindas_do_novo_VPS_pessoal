@@ -1,0 +1,17 @@
+{% extends "home/ideas_base.html" %}
+
+{% block title %}Confirmar e-mail{% endblock %}
+
+{% block content %}
+<section class="idea-detail">
+    <h1>Confirmar e-mail</h1>
+    <p>Confirme para ativar sua conta e participar das discussões.</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="idea-button">
+            Confirmar meu e-mail
+        </button>
+    </form>
+</section>
+{% endblock %}

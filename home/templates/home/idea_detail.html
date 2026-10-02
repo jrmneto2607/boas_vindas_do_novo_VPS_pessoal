@@ -1,0 +1,66 @@
+{% extends "home/ideas_base.html" %}
+
+{% block title %}{{ idea.idea_title|default:"Detalhes da ideia" }}{% endblock %}
+
+{% block content %}
+    <a href="{% url 'idea_list' %}" class="ideas-link">
+        ← Todas as ideias
+    </a>
+
+    <article class="idea-detail">
+        <div class="section-heading">
+            <span class="section-line"></span>
+            <span class="section-label">CONHEÇA A IDEIA</span>
+        </div>
+
+        <h1>{{ idea.idea_title|default:"Ideia sem título" }}</h1>
+
+        <div class="idea-meta">
+            <span class="idea-status">{{ idea.status_label }}</span>
+            <span>Autor: {{ idea.author_name|default:"Anônimo" }}</span>
+            <span>Enviada em {{ idea.created_at|date:"d/m/Y" }}</span>
+        </div>
+
+        <section class="idea-detail-description">
+            <h2>Sobre a proposta</h2>
+
+            {% if idea.idea_description %}
+                {{ idea.idea_description|linebreaks }}
+            {% else %}
+                <p>Explore os materiais disponíveis para conhecer melhor este projeto.</p>
+            {% endif %}
+        </section>
+
+        <section class="idea-detail-resources">
+            <h2>Materiais da ideia</h2>
+
+            <div class="idea-actions">
+                {% if idea.pdf_url %}
+                    <a
+                        href="{{ idea.pdf_url }}"
+                        class="idea-button"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        Abrir PDF ↗
+                    </a>
+                {% endif %}
+
+                {% if idea.idea_github %}
+                    <a
+                        href="{{ idea.idea_github }}"
+                        class="idea-button"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        Abrir GitHub ↗
+                    </a>
+                {% endif %}
+            </div>
+
+            {% if not idea.pdf_url and not idea.idea_github %}
+                <p>Nenhum material disponível no momento.</p>
+            {% endif %}
+        </section>
+    </article>
+{% endblock %}

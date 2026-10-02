@@ -4,14 +4,35 @@
 
 html {
     scroll-behavior: smooth;
+    overflow-x: clip;
 }
 
 body {
     margin: 0;
     font-family: Arial, sans-serif;
-    background: #0b0f19;
+    background: #000000;
     color: #f5f7fa;
+    position: relative;
+    isolation: isolate;
 }
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: calc(-1 * var(--space-travel, 240px)) 0 0;
+    z-index: -1;
+    pointer-events: none;
+    background: url("../images/universe-scroll-v1.png") center / cover no-repeat;
+    opacity: 0.30;
+    transform: translateY(var(--space-offset, 0px));
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body::before {
+        transform: none;
+    }
+}
+
 
 .container {
     width: min(1120px, calc(100% - 40px));
@@ -269,7 +290,7 @@ body {
     background-image:
         linear-gradient(
         to right,
-        #0b0f19 0%,
+        #000 0%,
         rgba(11, 15, 25, 1) 6%,
         rgba(11, 15, 25, 0) 16%
     ),
@@ -450,6 +471,19 @@ body {
 
 .ideas-link:hover span {
     transform: translateX(4px);
+}
+
+.idea-detail-link {
+    display: block;
+    width: fit-content;
+    margin: 24px 0 0 auto;
+    color: #5eead4;
+    font-size: 0.95rem;
+    text-decoration: none;
+}
+
+.idea-detail-link:hover {
+    text-decoration: underline;
 }
 
 @media (max-width: 1050px) {
@@ -694,4 +728,274 @@ body {
 .submit-idea-button:hover {
     background: transparent;
     color: #5eead4;
+}
+
+/* RODAPÉ */
+
+.site-footer {
+    padding: 32px 0;
+    border-top: 1px solid #202938;
+}
+
+.footer-content {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    gap: 24px;
+}
+
+.footer-top-link {
+    justify-self: start;
+    color: #aab4c3;
+    text-decoration: none;
+    font-size: 1rem;
+    transition: color 0.2s ease;
+}
+
+.footer-top-link:hover {
+    color: #5eead4;
+}
+
+.footer-top-link:focus-visible,
+.footer-logo:focus-visible {
+    outline: 2px solid #5eead4;
+    outline-offset: 5px;
+}
+
+.footer-logo {
+    justify-self: center;
+    font-size: 1.4rem;
+}
+
+.footer-copyright {
+    justify-self: end;
+    margin: 0;
+    color: #94a3b8;
+    font-size: 0.95rem;
+    text-align: right;
+}
+
+@media (max-width: 480px) {
+    .footer-content {
+        gap: 8px;
+    }
+
+    .footer-top-link,
+    .footer-copyright {
+        font-size: 0.75rem;
+    }
+
+    .footer-logo {
+        font-size: 1.05rem;
+    }
+}
+
+
+/* LISTA E DETALHES DAS IDEIAS */
+
+.ideas-page {
+    min-height: 70vh;
+    padding-top: 64px;
+    padding-bottom: 80px;
+}
+
+.ideas-page h1 {
+    margin: 16px 0 24px;
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    line-height: 1.15;
+    overflow-wrap: anywhere;
+}
+
+/* FILTROS */
+
+.ideas-filters {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    gap: 24px;
+    margin: 32px 0;
+    padding: 24px;
+    background: #111827;
+    border: 1px solid #202938;
+    border-radius: 16px;
+}
+
+.ideas-filters .form-group {
+    min-width: 0;
+    margin-top: 0;
+}
+
+.ideas-filters select {
+    width: 100%;
+    padding: 14px 16px;
+    background: #111827;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    color: #f5f7fa;
+    font: inherit;
+}
+
+.ideas-filters select:focus-visible {
+    outline: 2px solid #5eead4;
+    outline-offset: 2px;
+}
+
+.filter-options,
+.filter-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.filter-options label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #cbd5e1;
+}
+
+.filter-options input {
+    width: 18px;
+    height: 18px;
+    accent-color: #5eead4;
+}
+
+.filter-actions {
+    justify-content: flex-end;
+}
+
+.filter-actions button {
+    border: 0;
+    cursor: pointer;
+    font: inherit;
+    font-weight: 700;
+}
+
+/* CARDS — MESMO FLUXO DA HOME */
+
+.all-ideas-grid .idea-card {
+    min-width: 0;
+}
+
+/* Impede que os filtros responsivos da home escondam resultados. */
+.ideas-grid.all-ideas-grid .idea-card:nth-of-type(n) {
+    display: block;
+}
+
+.all-ideas-grid .idea-title {
+    margin: 0;
+    font-size: 1.35rem;
+    line-height: 1.3;
+}
+
+.all-ideas-grid .idea-title a {
+    color: #f5f7fa;
+    text-decoration: none;
+    overflow-wrap: anywhere;
+}
+
+.all-ideas-grid .idea-title a:hover {
+    color: #5eead4;
+}
+
+.all-ideas-grid .idea-status {
+    margin: 16px 0 0;
+}
+
+.all-ideas-grid .idea-description {
+    margin: 14px 0 0;
+    overflow-wrap: anywhere;
+}
+
+.all-ideas-grid .idea-actions {
+    flex-wrap: wrap;
+    margin-top: 20px;
+    margin-bottom: 0;
+}
+
+.all-ideas-grid .idea-author {
+    margin: 20px 0 0;
+}
+
+.all-ideas-grid .idea-detail-link {
+    display: block;
+    width: fit-content;
+    margin: 24px 0 0 auto;
+    color: #5eead4;
+    font-size: 0.95rem;
+    text-decoration: none;
+}
+
+.all-ideas-grid .idea-detail-link:hover {
+    text-decoration: underline;
+}
+
+.ideas-empty {
+    grid-column: 1 / -1;
+    color: #aab4c3;
+}
+
+/* PAGINAÇÃO */
+
+.ideas-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-top: 40px;
+    color: #cbd5e1;
+}
+
+/* PÁGINA DE CADA IDEIA */
+
+.idea-detail {
+    max-width: 900px;
+    margin-top: 40px;
+}
+
+.idea-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px 24px;
+    color: #aab4c3;
+}
+
+.idea-meta .idea-status {
+    margin: 0;
+    padding: 8px 12px;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    color: #5eead4;
+}
+
+.idea-detail-description,
+.idea-detail-resources {
+    margin-top: 40px;
+    padding-top: 24px;
+    border-top: 1px solid #202938;
+}
+
+.idea-detail-description p,
+.idea-detail-resources p {
+    color: #aab4c3;
+    line-height: 1.8;
+    overflow-wrap: anywhere;
+}
+
+.idea-detail .idea-actions {
+    flex-wrap: wrap;
+}
+
+/* TELAS MENORES */
+
+@media (max-width: 720px) {
+    .ideas-filters {
+        grid-template-columns: 1fr;
+    }
+
+    .filter-actions {
+        justify-content: flex-start;
+    }
 }

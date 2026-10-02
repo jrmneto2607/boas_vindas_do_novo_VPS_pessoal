@@ -15,6 +15,7 @@
 
     <link rel="stylesheet" href="{% static 'home/css/style.css' %}">
     <script src="{% static 'home/js/home.js' %}" defer></script>
+    <script src="{% static 'home/js/parallax.js' %}" defer></script>
 </head>
 
 <body>
@@ -250,6 +251,10 @@
                                 <span>{{ idea.author_name|default:"(Anonimo)" }}</span>
                             </p>
 
+                            <a href="{% url 'idea_detail' idea.pk %}" class="idea-detail-link">
+                                Ver ideia →
+                            </a>
+
                         </article>
                     {% empty %}
                         <p>Nenhuma ideia cadastrada ainda.</p>
@@ -257,7 +262,7 @@
                 </div>
 
                 <div class="ideas-footer">
-                    <a href="/ideias/" class="ideas-link">
+                    <a href="{% url 'idea_list' %}" class="ideas-link">
                         Ver todas as ideias
                         <span aria-hidden="true">→</span>
                     </a>
@@ -494,6 +499,18 @@
         </section>
 
     </main>
+
+    <footer class="site-footer">
+        <div class="container footer-content">
+            <a href="#inicio" class="footer-top-link">Voltar ao topo ↑</a>
+
+            <a href="#inicio" class="logo footer-logo">
+                MAFLO<span>TECH</span>
+            </a>
+
+            <p class="footer-copyright">© {% now "Y" %} Maflo Tech.</p>
+        </div>
+    </footer>
 
 </body>
 </html>
