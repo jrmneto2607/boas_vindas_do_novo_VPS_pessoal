@@ -15,7 +15,7 @@ from django.views.decorators.http import require_http_methods
 
 from .forms.accounts import RegistrationForm, ResendConfirmationForm
 from .models import Collaborator
-from .idea_submission import get_draft
+from .idea_submission import get_draft, extend_draft
 from urllib.parse import urlencode
 
 def resume_login(request):
@@ -81,10 +81,7 @@ def register(request):
 
     if request.method == "POST" and form.is_valid():
         data = form.cleaned_data
-        draft = get_draft(request)
-        if draft:
-            draft["expires"] = (timezone.now() + timedelta(hours=24)).timestamp()
-            request.session["idea_submission_draft"] = draft
+        extend_draft(request)
 
         try:
             with transaction.atomic():

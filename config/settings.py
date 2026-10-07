@@ -51,6 +51,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'home.middleware.ParticipationRateLimitMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -141,11 +142,10 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 #CONFIGURANDO O EMAIL PARA O DJANGO
-EMAIL_BACKEND = os.environ.get(
-    "EMAIL_BACKEND",
+EMAIL_BACKEND = os.environ.get("EMAIL_BACKEND") or (
     "django.core.mail.backends.console.EmailBackend"
     if DEBUG
-    else "django.core.mail.backends.smtp.EmailBackend",
+    else "django.core.mail.backends.smtp.EmailBackend"
 )
 
 EMAIL_HOST = os.environ.get("EMAIL_HOST", "")
@@ -168,3 +168,13 @@ LOGOUT_REDIRECT_URL = "idea_list"
 
 # Links de recuperação válidos por uma hora.
 PASSWORD_RESET_TIMEOUT = 60 * 60
+
+
+PRIVATE_UPLOAD_ROOT = BASE_DIR / "private_uploads"
+RATE_LIMITS = {
+    "register": (10, 3600), "login": (20, 300),
+    "password_reset": (5, 3600), "resend_confirmation": (10, 3600),
+    "home": (20, 3600),
+}
+
+RATE_LIMIT_TRUSTED_PROXIES = [v.strip() for v in os.environ.get("RATE_LIMIT_TRUSTED_PROXIES", "").split(",") if v.strip()]

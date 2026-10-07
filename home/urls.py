@@ -1,5 +1,6 @@
 from django.urls import path
 
+from . import file_views
 from . import profile_views
 from . import views
 from . import account_views
@@ -13,6 +14,7 @@ from .forms.accounts import (
 )
 
 urlpatterns = [
+    path("ideias/<int:pk>/pdf/", file_views.idea_pdf, name="idea_pdf"),
     path("conta/perfil/", profile_views.profile, name="profile"),
     path("conta/ideias/<int:pk>/excluir/", profile_views.idea_remove, name="idea_remove"),
     path("conta/alterar-senha/", auth_views.PasswordChangeView.as_view(

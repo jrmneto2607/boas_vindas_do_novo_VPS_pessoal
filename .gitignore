@@ -24,3 +24,5 @@ Thumbs.db
 
 # Backups
 *.backup
+
+private_uploads/

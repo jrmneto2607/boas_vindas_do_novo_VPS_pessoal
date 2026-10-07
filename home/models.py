@@ -1,3 +1,4 @@
+from .storage import draft_storage
 import uuid
 from django.db import models
 from django.conf import settings
@@ -270,3 +271,28 @@ class CommentReport(models.Model):
 
     def __str__(self):
         return f"Denúncia do comentário #{self.comment_id}"
+
+class RequestBucket(models.Model):
+    key = models.CharField(max_length=64, primary_key=True)
+    count = models.PositiveIntegerField(default=0)
+    expires_at = models.DateTimeField()
+
+
+class IdeaDraft(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    data = models.JSONField(default=dict)
+    pdf = models.FileField(upload_to="drafts/", storage=draft_storage, blank=True)
+    pdf_name = models.CharField(max_length=255, blank=True)
+    expires_at = models.DateTimeField()
+
+
+class SubmissionReceipt(models.Model):
+    id = models.UUIDField(primary_key=True)
+    idea = models.ForeignKey(IdeaSubmission, null=True, on_delete=models.SET_NULL)
+    completed = models.BooleanField(default=False)
+
+
+class PendingFileDeletion(models.Model):
+    name = models.CharField(max_length=500)
+    private = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)

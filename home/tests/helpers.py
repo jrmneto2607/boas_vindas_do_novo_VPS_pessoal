@@ -5,6 +5,15 @@ from ..models import Collaborator, IdeaSubmission
 
 
 class ContributorFixtures:
+    def setUp(self):
+        from tempfile import TemporaryDirectory
+        from django.test import override_settings
+        directory = TemporaryDirectory()
+        self.addCleanup(directory.cleanup)
+        override = override_settings(PRIVATE_UPLOAD_ROOT=directory.name)
+        override.enable()
+        self.addCleanup(override.disable)
+
     @classmethod
     def setUpTestData(cls):
         cls.user = get_user_model().objects.create_user(username="owner", password="safe-password-123")
@@ -20,3 +29,13 @@ class ContributorFixtures:
     def idea(self, **extra):
         return IdeaSubmission.objects.create(is_approved=True, owner=self.user, author_name="Autor", idea_title="Minha ideia", **extra)
 
+
+
+def pdf_bytes():
+    from io import BytesIO
+    from pypdf import PdfWriter
+    stream = BytesIO()
+    writer = PdfWriter()
+    writer.add_blank_page(width=200, height=200)
+    writer.write(stream)
+    return stream.getvalue()

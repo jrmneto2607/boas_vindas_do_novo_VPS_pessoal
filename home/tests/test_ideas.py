@@ -10,7 +10,7 @@ from ..models import Collaborator, Comment, CommentReport, IdeaSubmission
 from ..idea_submission import DRAFT_KEY
 
 
-from .helpers import ContributorFixtures
+from .helpers import ContributorFixtures, pdf_bytes
 
 
 class IdeasTests(ContributorFixtures, TestCase):
@@ -31,7 +31,7 @@ class IdeasTests(ContributorFixtures, TestCase):
 
     def test_pdf_and_fields_survive_login(self):
         with TemporaryDirectory() as directory, override_settings(MEDIA_ROOT=directory):
-            pdf = SimpleUploadedFile("proposta.pdf", b"%PDF-1.4 test", content_type="application/pdf")
+            pdf = SimpleUploadedFile("proposta.pdf", pdf_bytes(), content_type="application/pdf")
             self.client.post(reverse("home"), self.payload(idea_pdf=pdf))
             response = self.client.post(reverse("home"), {"submission_choice": "login"})
             self.assertIn(reverse("login"), response.url)
@@ -43,7 +43,7 @@ class IdeasTests(ContributorFixtures, TestCase):
             idea = IdeaSubmission.objects.get()
             self.assertEqual(idea.owner, self.user)
             with idea.idea_pdf.open("rb") as saved:
-                self.assertEqual(saved.read(), b"%PDF-1.4 test")
+                self.assertEqual(saved.read(), pdf_bytes())
 
 
     def test_expired_draft_cannot_be_submitted(self):

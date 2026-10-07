@@ -24,7 +24,6 @@ urlpatterns = [
     path('', include('home.urls')),
 ]
 
-urlpatterns += static(
-    settings.MEDIA_URL,
-    document_root=settings.MEDIA_ROOT
-)
+# Nunca servir MEDIA_ROOT diretamente: validação de acesso para URLs antigas.
+from home.file_views import idea_pdf
+urlpatterns += [path("media/<path:path>", idea_pdf)]

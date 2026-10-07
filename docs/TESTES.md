@@ -68,10 +68,19 @@ Verifica publicação de ideias, cadastro com retorno ao rascunho, exclusão do 
 - Erro de conexão com `db`: confira se o serviço PostgreSQL está ativo.
 - Erro de criação do banco: confira a permissão de criação de bancos do usuário configurado.
 
-A suíte contém 101 cenários após esta reorganização. Testes automatizados não substituem revisão visual no navegador nem validam a entrega real de SMTP, HTTPS, backups e restauração.
+A suíte contém 111 cenários após esta reorganização. Testes automatizados não substituem revisão visual no navegador nem validam a entrega real de SMTP, HTTPS, backups e restauração.
 
 ## Adicionar testes
 
 Use arquivos `test_*.py` na área correspondente, classes derivadas de `django.test.TestCase` e métodos `test_*`. Reutilize os helpers quando necessários. Para mudanças que exigem transações concorrentes, use `TransactionTestCase` e cenários próprios: a suíte atual não comprova o comportamento sob carga concorrente.
 
 Nenhum teste deve usar credenciais reais, enviar e-mails externos ou depender de registros existentes no banco normal.
+
+
+## Segurança e concorrência
+
+```bash
+docker compose run --rm web python manage.py test home.tests.test_security --noinput
+```
+
+Inclui PDFs inválidos/criptografados, acesso privado e URLs antigas, rascunhos temporários, limpeza e nova tentativa de exclusão, limites HTTP 429, preservação de bloqueios e dois envios simultâneos no PostgreSQL. O cenário concorrente usa TransactionTestCase e conexões independentes.

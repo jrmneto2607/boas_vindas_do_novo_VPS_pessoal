@@ -159,7 +159,7 @@
                             <div class="idea-actions">
 
                                 {% if idea.idea_pdf %}
-                                    <a href="{{ idea.idea_pdf.url }}"
+                                    <a href="{% url 'idea_pdf' idea.pk %}"
                                     class="idea-button"
                                     target="_blank"
                                     rel="noopener noreferrer">
@@ -461,6 +461,7 @@
                     </div>
 
                     <input type="hidden" name="discard_pdf" id="discard-pdf" value="">
+                    <input type="hidden" name="submission_key" value="{{ submission_key }}">
                     <input type="hidden" id="saved-pdf" value="{{ saved_pdf_name }}">
                     <button type="submit" class="submit-idea-button">
                         Enviar ideia

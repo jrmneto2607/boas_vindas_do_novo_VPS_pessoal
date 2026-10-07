@@ -5,3 +5,4 @@ gunicorn==26.2.0
 psycopg[binary]==3.3.6
 whitenoise==6.12.0
 nh3==0.3.7
+pypdf==6.1.1

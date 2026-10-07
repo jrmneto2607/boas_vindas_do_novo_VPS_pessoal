@@ -39,14 +39,24 @@ class IdeaSubmissionForm(forms.Form):
 
 
     def clean_idea_pdf(self):
-            idea_pdf = self.cleaned_data.get("idea_pdf")
-    
-            if idea_pdf and idea_pdf.size > 10 * 1024 * 1024:
-                raise forms.ValidationError(
-                    "O arquivo PDF deve ter no máximo 10 MB."
-                )
-    
-            return idea_pdf
+        from pypdf import PdfReader
+        pdf = self.cleaned_data.get("idea_pdf")
+        if not pdf:
+            return pdf
+        if pdf.size > 10 * 1024 * 1024:
+            raise forms.ValidationError("O arquivo PDF deve ter no máximo 10 MB.")
+        try:
+            if pdf.read(5) != b"%PDF-":
+                raise ValueError()
+            pdf.seek(0)
+            reader = PdfReader(pdf, strict=True)
+            if reader.is_encrypted or not len(reader.pages):
+                raise ValueError()
+        except Exception:
+            raise forms.ValidationError("Envie um PDF válido, com páginas e sem senha.") from None
+        finally:
+            pdf.seek(0)
+        return pdf
 
     def clean(self):
         cleaned_data = super().clean()

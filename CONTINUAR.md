@@ -195,3 +195,17 @@ O usuário encerrou os ajustes atuais e pediu para guardar estas sugestões para
 - Signal post_delete remove PDF após commit da exclusão (inclui exclusões administrativas). Transação revertida não apaga o arquivo.
 - TIME_ZONE=America/Sao_Paulo; USE_TZ continua ativo, mantendo datas conscientes de fuso.
 - Novos testes integrados em home/tests/test_workflows.py. 101 testes passaram no PostgreSQL; docs/TESTES.md atualizado. Sem commit/push nesta etapa.
+
+
+## Proteções operacionais — 07/10/2026
+
+- Usuário autorizou os sete pontos técnicos e a correção de concorrência do perfil.
+- .dockerignore exclui segredos, uploads, SQLite e backups. Nova dependência pypdf valida estrutura/páginas e rejeita PDF com senha.
+- Acesso a PDFs centralizado em home/file_views.py, inclusive /media/ antigo. Ideias pendentes/desativadas exigem dono ou administrador autorizado. Proxy não pode servir mídia diretamente.
+- Perfil usa update_fields apenas para campos permitidos, preservando bloqueios e liberação de publicação concorrentes.
+- Limites por IP e conta/e-mail em PostgreSQL, HTTP 429/Retry-After. Origem atrás de proxy só é confiada via lista explícita RATE_LIMIT_TRUSTED_PROXIES e X-Real-IP sobrescrito pelo proxy.
+- IdeaDraft usa armazenamento privado; sessões guardam apenas referência/validade. Conversão de rascunhos legados no acesso. Serviço cleanup no Compose a cada 15 minutos remove expirados e repete tarefas PendingFileDeletion; substituição e exclusão de PDF entram na fila após commit.
+- SubmissionReceipt e token assinado impedem duplicidade. Teste com duas requisições simultâneas validou um único registro.
+- config.production separado, com DEBUG=False, cookies seguros, HTTPS e HSTS inicial. Ambiente local preservado. HSTS subdomínios/preload intencionalmente desativados até definição do domínio; dois avisos correspondentes no check --deploy. Guia docs/PRODUCAO.md contém pré-requisitos de proxy/SMTP.
+- Migration 0010 cria tabelas de rascunho, fila de arquivos, limites e recibos. 111 testes passaram no PostgreSQL. Novos cenários em home/tests/test_security.py; docs/TESTES.md atualizado.
+- Backups/restauração e teste real de SMTP/HTTPS continuam sendo tarefas de operação do ambiente definitivo. Sem commit ou push nesta etapa.

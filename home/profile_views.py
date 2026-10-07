@@ -24,7 +24,7 @@ def profile(request):
         collaborator = form.save(commit=False)
         if changed:
             collaborator.contact_consent_at = timezone.now() if collaborator.contact_authorized else None
-        collaborator.save()
+        collaborator.save(update_fields=["public_name", "whatsapp", "contact_preference", "contact_authorized", "contact_consent_at"])
         messages.success(request, "Perfil atualizado.")
         return redirect("profile")
     ideas = IdeaSubmission.objects.filter(owner=request.user).annotate(

@@ -17,7 +17,7 @@ from .moderation_services import can_manage
 
 # Create your views here.
 def index(request):
-    from .idea_submission import submit_idea, get_draft
+    from .idea_submission import submit_idea, get_draft, submission_key
     draft = get_draft(request)
     if request.method == "POST":
         result = submit_idea(request)
@@ -37,6 +37,7 @@ def index(request):
         'home/index.html',
         {
             'form': form,
+            'submission_key': submission_key(request),
             'saved_pdf_name': draft.get('pdf_name', '') if draft else '',
             'ideas': ideas,
             'featured_ideas': featured_ideas,
@@ -69,7 +70,7 @@ def prepare_public_idea(idea):
 
     pdf_storage = IdeaSubmission._meta.get_field("idea_pdf").storage
     idea["pdf_url"] = (
-        pdf_storage.url(idea["idea_pdf"])
+        reverse("idea_pdf", args=[idea["id"]])
         if idea["idea_pdf"]
         else ""
     )
