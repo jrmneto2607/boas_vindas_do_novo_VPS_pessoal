@@ -40,6 +40,8 @@ class IdeaSubmission(models.Model):
         default=Status.EM_ANALISE,
     )
 
+    is_approved = models.BooleanField("Publicação aprovada", default=False)
+
     is_featured = models.BooleanField(default=False)
     is_active = models.BooleanField("Ideia ativa", default=True)
 
@@ -231,6 +233,9 @@ class CommentReport(models.Model):
         max_length=1000,
         blank=True,
     )
+
+    review_note = models.TextField("Motivo da avaliação", blank=True, max_length=1000)
+    dismissed = models.BooleanField("Denúncia descartada", default=False)
 
     reviewed_at = models.DateTimeField(
         "Avaliada em",

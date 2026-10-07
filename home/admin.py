@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 
 from .models import IdeaSubmission
 from .models import Collaborator, Comment, CommentReport
-from .moderation_services import moderate_comment
+from .moderation_services import moderate_comment, dismiss_report
 
 admin.site.site_header = "Administração Maflo Tech"
 admin.site.site_title = "Maflo Tech"
@@ -17,6 +17,7 @@ class IdeaSubmissionAdmin(admin.ModelAdmin):
         "idea_title",
         "author_name",
         "status",
+        "is_approved",
         "is_featured",
         "is_active",
         "created_at",
@@ -29,6 +30,7 @@ class IdeaSubmissionAdmin(admin.ModelAdmin):
 
     list_filter = (
         "status",
+        "is_approved",
         "is_featured",
         "is_active",
         "created_at",
@@ -58,6 +60,7 @@ class IdeaSubmissionAdmin(admin.ModelAdmin):
         ("Publicação", {
             "fields": (
                 "status",
+                "is_approved",
                 "is_featured",
                 "is_active",
             ),
@@ -212,6 +215,38 @@ class CommentAdmin(admin.ModelAdmin):
 
 @admin.register(CommentReport)
 class CommentReportAdmin(admin.ModelAdmin):
+    def get_urls(self):
+        from django.urls import path
+        return [path("<int:report_id>/descartar/", self.admin_site.admin_view(self.dismiss_view), name="home_commentreport_dismiss")] + super().get_urls()
+
+    def dismiss_view(self, request, report_id):
+        from django import forms
+        from django.shortcuts import get_object_or_404, redirect
+        from django.template.response import TemplateResponse
+        from .moderation_services import require_management_permission
+        require_management_permission(request.user, "home.change_commentreport")
+        class DismissForm(forms.Form):
+            note = forms.CharField(label="Motivo do descarte", max_length=1000, widget=forms.Textarea)
+        report = get_object_or_404(CommentReport, pk=report_id)
+        form = DismissForm(request.POST if request.method == "POST" else None)
+        if request.method == "POST" and form.is_valid():
+            try:
+                dismiss_report(user=request.user, report_id=report_id, note=form.cleaned_data["note"])
+            except ValidationError as error:
+                form.add_error(None, error)
+            else:
+                self.message_user(request, "Denúncia descartada e avaliação registrada.")
+                return redirect("admin:home_commentreport_changelist")
+        return TemplateResponse(request, "admin/dismiss_report.html", {**self.admin_site.each_context(request), "title": "Descartar denúncia", "form": form, "report": report, "opts": self.model._meta})
+
+    @admin.display(description="Avaliação")
+    def resolution_link(self, obj):
+        from django.utils.html import format_html
+        from django.urls import reverse
+        if obj.reviewed_at:
+            return "Descartada" if obj.dismissed else "Avaliada"
+        return format_html('<a href="{}">Descartar com motivo</a>', reverse("admin:home_commentreport_dismiss", args=[obj.pk]))
+
     list_display = (
         "id",
         "comment",
@@ -219,6 +254,7 @@ class CommentReportAdmin(admin.ModelAdmin):
         "reason",
         "created_at",
         "reviewed_at",
+        "resolution_link",
     )
     list_filter = ("reason", "reviewed_at")
     search_fields = (
@@ -237,6 +273,8 @@ class CommentReportAdmin(admin.ModelAdmin):
         "created_at",
         "reviewed_at",
         "reviewed_by",
+        "review_note",
+        "dismissed",
     )
     fields = readonly_fields
 
@@ -264,7 +302,7 @@ def organizer_context(request):
                 "url": reverse(f"admin:{opts.app_label}_{opts.model_name}_changelist") + "?" + query})
     add_card(Comment, "Comentários aguardando aprovação", Comment.objects.filter(status="pending", removed_at__isnull=True), "status__exact=pending&removed_at__isnull=True")
     add_card(CommentReport, "Denúncias pendentes", CommentReport.objects.filter(reviewed_at__isnull=True), "reviewed_at__isnull=True")
-    add_card(IdeaSubmission, "Ideias em análise", IdeaSubmission.objects.filter(status=1, is_active=True), "status__exact=1&is_active__exact=1")
+    add_card(IdeaSubmission, "Ideias aguardando publicação", IdeaSubmission.objects.filter(is_approved=False, is_active=True), "is_approved__exact=0&is_active__exact=1")
     context["organizer_cards"] = cards
     return context
 

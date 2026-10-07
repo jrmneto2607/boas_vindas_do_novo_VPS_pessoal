@@ -7,9 +7,9 @@ from django.test import Client, RequestFactory, TestCase
 from django.urls import reverse
 from django.utils import timezone
 
-from .forum_services import create_comment
-from .models import Collaborator, Comment, CommentReport, IdeaSubmission
-from .moderation_services import can_manage, moderate_comment
+from ..forum_services import create_comment
+from ..models import Collaborator, Comment, CommentReport, IdeaSubmission
+from ..moderation_services import can_manage, moderate_comment
 
 
 class ModerationTests(TestCase):
@@ -39,8 +39,8 @@ class ModerationTests(TestCase):
         cls.editor.user_permissions.add(idea_permission)
         cls.deleter.user_permissions.add(delete_permission)
         cls.outsider.user_permissions.add(comment_permission, idea_permission, delete_permission)
-        cls.idea = IdeaSubmission.objects.create(author_name="Autor", idea_title="Ideia moderada", is_featured=True)
-        cls.other_idea = IdeaSubmission.objects.create(author_name="Autor", idea_title="Outra ideia")
+        cls.idea = IdeaSubmission.objects.create(is_approved=True, author_name="Autor", idea_title="Ideia moderada", is_featured=True)
+        cls.other_idea = IdeaSubmission.objects.create(is_approved=True, author_name="Autor", idea_title="Outra ideia")
         cls.pending = Comment.objects.create(idea=cls.idea, author=cls.author, message="Contribuição em análise")
         cls.published = Comment.objects.create(idea=cls.idea, author=cls.author, message="Contribuição pública", status=Comment.Status.PUBLISHED)
         cls.disabled = Comment.objects.create(idea=cls.idea, author=cls.author, message="Contribuição desativada", status=Comment.Status.DISABLED)
@@ -221,7 +221,7 @@ class ModerationTests(TestCase):
         self.login(self.editor)
         response = self.client.post(reverse("admin:home_ideasubmission_change", args=[self.idea.pk]), {
             "author_name": self.idea.author_name, "idea_title": self.idea.idea_title,
-            "status": self.idea.status, "is_active": "on", "_save": "Salvar",
+            "status": self.idea.status, "is_active": "on", "is_approved": "on", "_save": "Salvar",
         })
         self.assertEqual(response.status_code, 302)
         self.idea.refresh_from_db()
@@ -383,3 +383,26 @@ class ModerationTests(TestCase):
         self.assertContains(response, reverse("comment_edit", args=[self.idea.pk, self.published.pk]))
         self.assertContains(response, "Compartilhar ideia")
         self.assertContains(response, "Copiar link")
+
+
+from .helpers import ContributorFixtures
+
+
+class OrganizerDashboardTests(ContributorFixtures, TestCase):
+    def test_organizer_cards_and_permissions(self):
+        from django.contrib.auth.models import Permission
+        self.user.is_staff = True
+        self.user.save()
+        idea = self.idea()
+        idea.is_approved = False
+        idea.save()
+        self.client.force_login(self.user)
+        response = self.client.get(reverse("admin:index"))
+        self.assertNotContains(response, "Ideias aguardando publicação")
+        self.user.user_permissions.add(Permission.objects.get(codename="view_ideasubmission"))
+        response = self.client.get(reverse("admin:index"))
+        self.assertContains(response, "Ideias aguardando publicação")
+        self.assertEqual(response.context["organizer_cards"][0]["count"], 1)
+        self.assertNotContains(response, "Denúncias pendentes")
+        self.assertEqual(self.client.get(response.context["organizer_cards"][0]["url"]).status_code, 200)
+

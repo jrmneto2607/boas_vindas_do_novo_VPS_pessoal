@@ -1,0 +1,1 @@
+{% extends "admin/base_site.html" %}{% block content %}<h1>{{ title }}</h1><p>{{ report }} — {{ report.get_reason_display }}</p><p>{{ report.details }}</p><form method="post">{% csrf_token %}{{ form.as_p }}<input type="submit" value="Descartar denúncia"></form>{% endblock %}

@@ -8,6 +8,9 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.views.decorators.http import require_POST
 
+import html
+from django.utils.html import strip_tags
+from .forum_html import sanitize_message
 from .forms.profile import ProfileForm
 from .models import Collaborator, Comment, IdeaSubmission
 
@@ -31,8 +34,11 @@ def profile(request):
     for idea in idea_page:
         idea.can_remove = idea.status == IdeaSubmission.Status.EM_ANALISE and not idea.has_comments and not collaborator.is_blocked
     contributions = Comment.objects.filter(author=collaborator).select_related("idea").order_by("-created_at", "-pk")
+    contribution_page = Paginator(contributions, 10).get_page(request.GET.get("contribuicoes"))
+    for contribution in contribution_page:
+        contribution.excerpt = "" if contribution.removed_at else html.unescape(strip_tags(sanitize_message(contribution.message)))
     return render(request, "home/profile.html", {"form": form, "idea_page": idea_page,
-        "contribution_page": Paginator(contributions, 10).get_page(request.GET.get("contribuicoes"))})
+        "contribution_page": contribution_page})
 
 
 @login_required

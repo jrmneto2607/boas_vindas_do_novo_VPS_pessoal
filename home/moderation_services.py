@@ -4,7 +4,7 @@ from django.db import transaction
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 
-from .models import Collaborator, Comment, IdeaSubmission
+from .models import Collaborator, Comment, CommentReport, IdeaSubmission
 
 
 def can_manage(user, permission):
@@ -70,3 +70,29 @@ def deactivate_idea(*, user, idea_id):
             change_message="Ideia desativada pelo site.",
         )
     return idea
+
+
+@transaction.atomic
+def dismiss_report(*, user, report_id, note):
+    require_management_permission(user, "home.change_commentreport")
+    note = note.strip()
+    if not note or len(note) > 1000:
+        raise ValidationError("Informe um motivo de até 1000 caracteres.")
+    target = get_object_or_404(CommentReport.objects.select_related("comment"), pk=report_id)
+    # Mesma ordem de bloqueio usada nas contribuições e na moderação.
+    Collaborator.objects.select_for_update().get(pk=target.comment.author_id)
+    IdeaSubmission.objects.select_for_update().get(pk=target.comment.idea_id)
+    comment = Comment.objects.select_for_update().get(pk=target.comment_id)
+    report = CommentReport.objects.select_for_update().get(pk=report_id)
+    if report.reviewed_at:
+        raise ValidationError("Esta denúncia já foi avaliada.")
+    report.reviewed_at = timezone.now()
+    report.reviewed_by = user
+    report.review_note = note
+    report.dismissed = True
+    report.save(update_fields=["reviewed_at", "reviewed_by", "review_note", "dismissed"])
+    if comment.status == Comment.Status.REPORTED and comment.reports.filter(reviewed_at__isnull=True).count() < 2:
+        comment.status = Comment.Status.PUBLISHED
+        comment.save(update_fields=["status"])
+    LogEntry.objects.log_actions(user_id=user.pk, queryset=[report], action_flag=CHANGE, change_message="Denúncia descartada: " + note)
+    return report

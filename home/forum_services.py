@@ -77,7 +77,7 @@ def create_comment(*, user, idea_id, cleaned_data):
         raise PermissionDenied("Sua conta está desativada.")
 
     idea = IdeaSubmission.objects.select_for_update().get(pk=idea_id)
-    if not idea.is_active:
+    if not idea.is_active or not idea.is_approved:
         raise PermissionDenied("Essa ideia não está disponível para contribuições.")
     now = timezone.now()
     recent_comments = Comment.objects.filter(author=author)
@@ -283,7 +283,7 @@ def change_own_comment(*, user, idea_id, comment_id, cleaned_data=None):
 
 def get_object_or_404_active_idea(idea_id):
     from django.shortcuts import get_object_or_404
-    return get_object_or_404(IdeaSubmission.objects.select_for_update(), pk=idea_id, is_active=True)
+    return get_object_or_404(IdeaSubmission.objects.select_for_update(), pk=idea_id, is_active=True, is_approved=True)
 
 
 @transaction.atomic

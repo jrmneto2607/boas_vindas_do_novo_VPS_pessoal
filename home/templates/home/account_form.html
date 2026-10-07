@@ -7,6 +7,7 @@
         <span class="section-label">SUA CONTA</span>
     </div>
     <h1 class="submit-idea-title">{{ title }}</h1>
+    {% if request.session.idea_submission_draft and request.resolver_match.url_name != "login" %}<p>Sua ideia está guardada neste navegador. Após confirmar o e-mail, entre para revisar e concluir o envio.</p>{% endif %}
     <form class="submit-idea-form" method="post">
         {% csrf_token %}
         {% include "home/form_fields.html" %}
@@ -27,13 +28,13 @@
     </form>
     <div class="account-links">
         {% if request.resolver_match.url_name == "login" %}
-            <a href="{% url 'register' %}" class="account-text-link">Ainda não tenho uma conta.</a>
+            <a href="{% url 'register' %}{% if next %}?next={{ next|urlencode }}{% endif %}" class="account-text-link">Ainda não tenho uma conta.</a>
         {% elif request.resolver_match.url_name == "register" %}
-            <a href="{% url 'login' %}" class="account-text-link">Já tenho uma conta.</a>
+            <a href="{% url 'login' %}{% if request.session.idea_submission_draft %}?next={% url 'home' %}%23enviar-ideia{% endif %}" class="account-text-link">Já tenho uma conta.</a>
         {% elif request.resolver_match.url_name == "password_change" %}
             <a href="{% url 'profile' %}" class="account-text-link">Voltar ao perfil</a>
         {% else %}
-            <a href="{% url 'login' %}" class="account-text-link">Voltar para entrar</a>
+            <a href="{% url 'login' %}{% if request.session.idea_submission_draft %}?next={% url 'home' %}%23enviar-ideia{% endif %}" class="account-text-link">Voltar para entrar</a>
         {% endif %}
     </div>
 </section>

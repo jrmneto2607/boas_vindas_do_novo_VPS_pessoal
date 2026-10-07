@@ -16,7 +16,7 @@ from .views import idea_detail
 @login_required
 @require_POST
 def comment_create(request, pk):
-    get_object_or_404(IdeaSubmission, pk=pk, is_active=True)
+    get_object_or_404(IdeaSubmission, pk=pk, is_active=True, is_approved=True)
     form = CommentForm(request.POST)
     if form.is_valid():
         try:
@@ -37,7 +37,7 @@ def comment_create(request, pk):
 @login_required
 @require_http_methods(["GET", "POST"])
 def comment_edit(request, pk, comment_id):
-    get_object_or_404(IdeaSubmission, pk=pk, is_active=True)
+    get_object_or_404(IdeaSubmission, pk=pk, is_active=True, is_approved=True)
     with transaction.atomic():
         author = require_participant(request.user)
     comment = get_object_or_404(Comment, pk=comment_id, idea_id=pk, author=author, removed_at__isnull=True)
@@ -64,7 +64,7 @@ def comment_remove(request, pk, comment_id):
 @login_required
 @require_http_methods(["GET", "POST"])
 def comment_report(request, pk, comment_id):
-    get_object_or_404(IdeaSubmission, pk=pk, is_active=True)
+    get_object_or_404(IdeaSubmission, pk=pk, is_active=True, is_approved=True)
     with transaction.atomic():
         author = require_participant(request.user)
     get_object_or_404(Comment.objects.exclude(author=author), pk=comment_id, idea_id=pk,

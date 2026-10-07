@@ -28,9 +28,9 @@ def index(request):
         form = IdeaSubmissionForm(initial=draft["data"] if draft else None)
 
     # Obter todas as ideias enviadas, ordenadas por data de criação (mais recentes primeiro)
-    ideas = IdeaSubmission.objects.filter(is_active=True).order_by('-created_at', '-pk')
+    ideas = IdeaSubmission.objects.filter(is_active=True, is_approved=True).order_by('-created_at', '-pk')
     # Obter ideias em destaque, limitando a 6 ideias aleatórias
-    featured_ideas = IdeaSubmission.objects.filter(is_featured=True, is_active=True).order_by('?')[:6]
+    featured_ideas = IdeaSubmission.objects.filter(is_featured=True, is_active=True, is_approved=True).order_by('?')[:6]
 
     return render(
         request, 
@@ -59,7 +59,7 @@ PUBLIC_IDEA_FIELDS = (
 
 
 def public_ideas():
-    return IdeaSubmission.objects.filter(is_active=True).values(*PUBLIC_IDEA_FIELDS)
+    return IdeaSubmission.objects.filter(is_active=True, is_approved=True).values(*PUBLIC_IDEA_FIELDS)
 
 
 def prepare_public_idea(idea):

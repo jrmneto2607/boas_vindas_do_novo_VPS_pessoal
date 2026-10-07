@@ -174,3 +174,24 @@ O usuário encerrou os ajustes atuais e pediu para guardar estas sugestões para
 - Removidos os avisos abaixo do formulário e o checkbox de descarte do PDF. Ícone de lixeira junto ao nome permite remover o PDF selecionado ou guardado no rascunho.
 - CSS atualizado para v=20261007-2; collectstatic executado e web reiniciado.
 - Commit reúne fórum/moderação ainda não versionados, perfil, vínculo de ideias e contadores do Organizador. Push não solicitado.
+
+
+## Organização dos testes — 07/10/2026
+
+- Usuário autorizou organizar a suíte em home/tests/, separada dos módulos da aplicação, e documentar seu uso.
+- Removidos home/tests.py (vazio) e os antigos home/test_forum.py, home/test_moderation.py e home/test_profile.py. Cenários preservados e reorganizados em test_forum.py, test_moderation.py, test_ideas.py e test_profile.py dentro de home/tests/.
+- Helpers de colaboradores e ideias em home/tests/helpers.py. Testes do Organizador ficam com moderação; envio/exclusão de ideias ficam em test_ideas.py.
+- Criado test_accounts.py com 15 cenários permanentes: cadastro, duplicidade, validações, falha de e-mail, confirmação via POST, links inválidos/expirados/reutilizados, bloqueios, reenvio, login, recuperação e CSRF.
+- Suíte organizada: 96 testes passaram no PostgreSQL. Comando: docker compose run --rm web python manage.py test home.tests --noinput.
+- Guia completo em docs/TESTES.md, com comandos por área e cenário, preparação, isolamento e diagnóstico de falhas.
+- Esta etapa altera apenas testes/documentação. Melhorias da revisão geral continuam propostas para implementação futura. Cards do perfil com duas colunas e trecho do comentário seguem como alteração local anterior. Sem novo commit ou push.
+
+
+## Complementos concluídos — 07/10/2026
+
+- Publicação independente do estágio: IdeaSubmission.is_approved=False em novos envios. Home, lista, detalhe e participação no fórum exigem ideia ativa e aprovada. Perfil informa espera por aprovação. Organizador permite marcar Publicação aprovada e filtrar pendências. Migration 0009 preserva ideias existentes como aprovadas.
+- Cadastro com rascunho na sessão: link a partir do login, orientação no cadastro/reenvio e confirmação direcionando ao login com retorno à home para revisar o envio. Ao cadastrar, validade do rascunho estendida para 24 horas para permitir confirmação; é preciso continuar no mesmo navegador/sessão. Não há envio automático nem login automático pela confirmação.
+- Organizador: denúncia tem atalho “Descartar com motivo”, exigindo permissão change_commentreport e justificativa, com moderador, data e histórico. Ao restarem menos de duas denúncias pendentes, comentário oculto por denúncias volta a publicado. Comentários desativados não são reativados por esse descarte.
+- Signal post_delete remove PDF após commit da exclusão (inclui exclusões administrativas). Transação revertida não apaga o arquivo.
+- TIME_ZONE=America/Sao_Paulo; USE_TZ continua ativo, mantendo datas conscientes de fuso.
+- Novos testes integrados em home/tests/test_workflows.py. 101 testes passaram no PostgreSQL; docs/TESTES.md atualizado. Sem commit/push nesta etapa.

@@ -6,9 +6,9 @@ from django.test import Client, TestCase
 from django.urls import reverse
 from django.utils import timezone
 
-from .forms.forum import CommentForm
-from .forum_services import create_comment
-from .models import Collaborator, Comment, IdeaSubmission
+from ..forms.forum import CommentForm
+from ..forum_services import create_comment
+from ..models import Collaborator, Comment, IdeaSubmission
 
 
 class ForumSubmissionTests(TestCase):
@@ -26,10 +26,10 @@ class ForumSubmissionTests(TestCase):
             user=cls.other_user, public_name="Outro",
             email="other@example.com", email_confirmed_at=timezone.now(),
         )
-        cls.idea = IdeaSubmission.objects.create(
+        cls.idea = IdeaSubmission.objects.create(is_approved=True, 
             author_name="Autor", idea_title="Ideia de teste",
         )
-        cls.other_idea = IdeaSubmission.objects.create(
+        cls.other_idea = IdeaSubmission.objects.create(is_approved=True, 
             author_name="Autor", idea_title="Outra ideia",
         )
 

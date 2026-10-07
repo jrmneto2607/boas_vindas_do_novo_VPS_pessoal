@@ -9,15 +9,16 @@
 <p>A exclusão é permitida apenas enquanto a ideia estiver em análise e nunca tiver recebido comentários.</p>
 <div class="ideas-grid">{% for idea in idea_page %}<article class="idea-card">
 <h3>{{ idea.idea_title }}</h3><p>{{ idea.get_status_display }} · {{ idea.created_at|date:"d/m/Y" }}</p>
-{% if idea.is_active %}<a href="{% url 'idea_detail' idea.pk %}">Ver ideia e discussão</a>{% else %}<p>Desativada pela administração</p>{% endif %}
+{% if not idea.is_approved %}<p>Aguardando aprovação para publicação</p>{% elif idea.is_active %}<a href="{% url 'idea_detail' idea.pk %}">Ver ideia e discussão</a>{% else %}<p>Desativada pela administração</p>{% endif %}
 {% if idea.can_remove %}<form method="post" action="{% url 'idea_remove' idea.pk %}" class="idea-remove-form">{% csrf_token %}<button class="account-secondary-button">Excluir ideia</button></form>{% endif %}
 </article>{% empty %}<p>Você ainda não enviou ideias com esta conta.</p>{% endfor %}</div>
 <nav class="account-actions" aria-label="Páginas de ideias">{% if idea_page.has_previous %}<a href="?ideias={{ idea_page.previous_page_number }}&contribuicoes={{ contribution_page.number }}">Anterior</a>{% endif %}<span>{{ idea_page.number }} / {{ idea_page.paginator.num_pages }}</span>{% if idea_page.has_next %}<a href="?ideias={{ idea_page.next_page_number }}&contribuicoes={{ contribution_page.number }}">Próxima</a>{% endif %}</nav>
 </section><section class="profile-section"><h2>Minhas contribuições</h2>
-{% for contribution in contribution_page %}<article class="idea-card"><h3>{{ contribution.idea.idea_title }}</h3>
+<div class="profile-contributions-grid">{% for contribution in contribution_page %}<article class="idea-card"><h3>{{ contribution.idea.idea_title }}</h3>
 <p>{{ contribution.created_at|date:"d/m/Y H:i" }} · {% if contribution.removed_at %}Removida por você{% else %}{{ contribution.get_status_display }}{% endif %}</p>
-{% if contribution.idea.is_active %}<a href="{% url 'idea_detail' contribution.idea_id %}?comentario={{ contribution.pk }}#comment-{{ contribution.pk }}">Ver discussão</a>{% else %}<p>Ideia desativada</p>{% endif %}
-</article>{% empty %}<p>Você ainda não participou do fórum.</p>{% endfor %}
+{% if contribution.excerpt %}<p class="contribution-excerpt">{{ contribution.excerpt|truncatechars:220 }}</p>{% endif %}
+{% if contribution.idea.is_active and contribution.idea.is_approved %}<a href="{% url 'idea_detail' contribution.idea_id %}?comentario={{ contribution.pk }}#comment-{{ contribution.pk }}" class="account-text-link">Ver discussão</a>{% else %}<p>Ideia desativada</p>{% endif %}
+</article>{% empty %}<p>Você ainda não participou do fórum.</p>{% endfor %}</div>
 <nav class="account-actions" aria-label="Páginas de contribuições">{% if contribution_page.has_previous %}<a href="?ideias={{ idea_page.number }}&contribuicoes={{ contribution_page.previous_page_number }}">Anterior</a>{% endif %}<span>{{ contribution_page.number }} / {{ contribution_page.paginator.num_pages }}</span>{% if contribution_page.has_next %}<a href="?ideias={{ idea_page.number }}&contribuicoes={{ contribution_page.next_page_number }}">Próxima</a>{% endif %}</nav>
 </section>{% endblock %}
 {% block extra_head %}{% load static %}<script src="{% static 'home/js/profile.js' %}" defer></script>{% endblock %}

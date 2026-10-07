@@ -15,6 +15,14 @@ from django.views.decorators.http import require_http_methods
 
 from .forms.accounts import RegistrationForm, ResendConfirmationForm
 from .models import Collaborator
+from .idea_submission import get_draft
+from urllib.parse import urlencode
+
+def resume_login(request):
+    if get_draft(request):
+        return redirect(reverse("login") + "?" + urlencode({"next": reverse("home") + "#enviar-ideia"}))
+    return redirect("idea_list")
+
 
 
 logger = logging.getLogger(__name__)
@@ -73,6 +81,10 @@ def register(request):
 
     if request.method == "POST" and form.is_valid():
         data = form.cleaned_data
+        draft = get_draft(request)
+        if draft:
+            draft["expires"] = (timezone.now() + timedelta(hours=24)).timestamp()
+            request.session["idea_submission_draft"] = draft
 
         try:
             with transaction.atomic():
@@ -180,7 +192,7 @@ def confirm_email(request, token):
                     "E-mail confirmado. Sua conta foi ativada.",
                 )
 
-        return redirect("idea_list")
+        return resume_login(request)
 
     collaborator = Collaborator.objects.filter(
         pk=data["collaborator_id"],
