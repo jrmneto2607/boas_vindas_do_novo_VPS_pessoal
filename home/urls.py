@@ -1,7 +1,10 @@
 from django.urls import path
 
+from . import profile_views
 from . import views
 from . import account_views
+from . import forum_views
+from . import moderation_views
 from django.contrib.auth import views as auth_views
 from django.urls import reverse_lazy
 from .forms.accounts import (
@@ -10,9 +13,33 @@ from .forms.accounts import (
 )
 
 urlpatterns = [
+    path("conta/perfil/", profile_views.profile, name="profile"),
+    path("conta/ideias/<int:pk>/excluir/", profile_views.idea_remove, name="idea_remove"),
+    path("conta/alterar-senha/", auth_views.PasswordChangeView.as_view(
+        template_name="home/account_form.html", success_url=reverse_lazy("profile"),
+        extra_context={"title": "Alterar senha", "button_label": "Salvar senha"}), name="password_change"),
     path("", views.index, name="home"),
     path("ideias/", views.idea_list, name="idea_list"),
     path("ideias/<int:pk>/", views.idea_detail, name="idea_detail"),
+    path(
+        "ideias/<int:pk>/comentarios/enviar/",
+        forum_views.comment_create,
+        name="comment_create",
+    ),
+
+    path("ideias/<int:pk>/comentarios/<int:comment_id>/editar/", forum_views.comment_edit, name="comment_edit"),
+    path("ideias/<int:pk>/comentarios/<int:comment_id>/remover/", forum_views.comment_remove, name="comment_remove"),
+    path("ideias/<int:pk>/comentarios/<int:comment_id>/denunciar/", forum_views.comment_report, name="comment_report"),
+    path(
+        "ideias/<int:pk>/comentarios/<int:comment_id>/moderar/",
+        moderation_views.comment_moderate,
+        name="comment_moderate",
+    ),
+    path(
+        "ideias/<int:pk>/desativar/",
+        moderation_views.idea_deactivate,
+        name="idea_deactivate",
+    ),
 
 # Account management
     path(

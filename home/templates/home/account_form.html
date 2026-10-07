@@ -30,6 +30,8 @@
             <a href="{% url 'register' %}" class="account-text-link">Ainda não tenho uma conta.</a>
         {% elif request.resolver_match.url_name == "register" %}
             <a href="{% url 'login' %}" class="account-text-link">Já tenho uma conta.</a>
+        {% elif request.resolver_match.url_name == "password_change" %}
+            <a href="{% url 'profile' %}" class="account-text-link">Voltar ao perfil</a>
         {% else %}
             <a href="{% url 'login' %}" class="account-text-link">Voltar para entrar</a>
         {% endif %}

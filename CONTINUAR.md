@@ -124,3 +124,53 @@ Retomar lendo este arquivo e verificando os arquivos atuais. Próximo trabalho: 
 - CSS servido com versão na URL para renovar o cache. Arquivos em staticfiles atualizados com collectstatic.
 - Verificações antes do commit: git diff --check e manage.py check passaram. Aparência conferida pelo usuário ao longo dos ajustes.
 - Usuário pediu um commit local antes de iniciar o fórum. Não realizar push sem pedido.
+## Atualização do fórum — 02/10/2026
+
+- Fórum implementado na página de cada ideia, com editor Quill local, sanitização nh3, limites de envio e moderação discreta. Forms permanecem em home/forms/.
+- Aprovar comentário ou resposta libera can_publish_directly do autor, no site ou no Organizador. Bloqueios continuam valendo. A liberação é registrada no histórico administrativo.
+- Controles de moderação aparecem junto ao nome/data de cada contribuição, conforme permissões; ideias podem ser desativadas sem apagar registros. Migration 0007 adiciona is_active à ideia.
+- Autor pode editar e remover suas contribuições. Remoção mantém registros e respostas, exibindo marcador no lugar do comentário principal quando necessário.
+- Edição de contribuição rejeitada ou denunciada retorna para análise; autores ainda sem publicação direta também passam pela análise ao editar. Edição não modifica o vínculo de resposta.
+- Denúncias exigem participação habilitada, motivo válido, autoria diferente e uma denúncia por conta/contribuição. Duas denúncias pendentes distintas ocultam o conteúdo até moderação. Detalhes ficam privados.
+- Página mostra total de contribuições visíveis, ordenação recentes/antigos, trecho ao responder, links para compartilhar ideia/contribuição e confirmação antes de desativar ideia ou remover contribuição.
+- Links de contribuição usam ?comentario=ID#comment-ID para localizar a página correta respeitando a visibilidade.
+- Novos endpoints: comment_edit (GET/POST), comment_remove (POST), comment_report (GET/POST). Reutilizam CommentForm e CommentReportForm; templates forum_action.html e forum_comment.html.
+- home/test_forum.py e home/test_moderation.py: 68 testes passaram no PostgreSQL. Prévia fictícia conferida em 1280px e 390px, sem rolagem horizontal ou erros JS; cópia de link e cancelamento da confirmação verificados.
+- Novos arquivos estáticos precisam de collectstatic; Gunicorn precisa reiniciar para aplicar código/templates. Não houve commit ou push.
+
+## Próxima sessão — melhorias para 03/10/2026
+
+O usuário encerrou os ajustes atuais e pediu para guardar estas sugestões para amanhã. São propostas para retomar e escolher; não implementar automaticamente sem alinhar a próxima etapa.
+
+1. Busca e filtros de ideias: revisar os filtros existentes e ampliar busca por palavra-chave, tema e estágio do projeto conforme necessário.
+2. Acompanhamento de ideias: seguir propostas e consultar novidades em uma área “Ideias que acompanho”.
+3. Perfil do colaborador: reunir contribuições e permitir alterar nome público, senha e preferências de contato.
+4. Organizador mais prático: destacar comentários pendentes, denúncias e ideias novas, com contadores e atalhos. Prioridade sugerida para a próxima etapa.
+5. Preparação para publicação: configurar envio real de e-mails, backups e revisar configurações de produção. Priorizar se a intenção for colocar o site no ar.
+
+Últimos ajustes concluídos: comentários/respostas em caixas com ações por ícones e legendas; rótulo Publicado oculto; cabeçalho da ideia simplificado, título menor e compartilhamento ao lado; “Explorar ideias” abre a lista completa e “Ideias” no menu leva ao destaque na home; Sair com borda avermelhada. CSS atualizado para v=20261002-29. Sem commit ou push.
+
+
+## Perfil, vínculo de ideias e Organizador — 07/10/2026
+
+- Usuário autorizou implementar diretamente este escopo. Busca/filtros, seguir ideias de terceiros e preparação para publicação ficam para depois.
+- IdeaSubmission.owner vincula novos envios autenticados ao usuário Django (migration 0008 aplicada). Ideias antigas/anônimas permanecem sem dono; não associar pelo e-mail informado.
+- Envio sem login primeiro mostra a escolha “Entrar e vincular” ou “Enviar sem conta”. A ideia só é criada após concluir o envio. Login retorna à home com campos e PDF preservados para revisão.
+- Rascunho guardado na sessão Django do servidor, com PDF em base64 e validade de uma hora. Expiração é conferida antes de usar o rascunho; descarte no próximo acesso ou após envio. Não mudar para sessões em cookies com esse mecanismo. Manter limpeza periódica das sessões expiradas (clearsessions) na preparação para produção.
+- Meu perfil em /conta/perfil/: edição de nome público, WhatsApp e preferências/autorização de contato, acesso à troca de senha, ideias próprias e contribuições paginadas. Dados de outras contas não aparecem.
+- Autor só pode excluir ideia em análise que nunca recebeu comentários, incluindo removidos, desativados, denunciados e pendentes. POST com CSRF e bloqueio de registros no banco, compatível com a ordem de bloqueio do envio do fórum. Contas bloqueadas não enviam nem excluem ideias.
+- Perfil oferece confirmação de exclusão no navegador. Ideias desativadas continuam listadas ao dono, sem link público.
+- Organizador permanece em /organizador/ e recebe cartões com contadores/atalhos para comentários pendentes, denúncias pendentes e ideias ativas em análise, respeitando permissões administrativas. “Ideias em análise” representa o estágio atual, sem introduzir outro estado de moderação.
+- Arquivos principais: home/profile_views.py, home/forms/profile.py, home/idea_submission.py, home/templates/home/profile.html, home/templates/home/idea_submission_choice.html, home/templates/admin/organizer_index.html e home/test_profile.py.
+- 81 testes passaram no PostgreSQL (13 novos + 68 do fórum/moderação). manage.py check, makemigrations --check --dry-run e git diff --check passaram. Migration aplicada, collectstatic executado, serviços web/db iniciados na porta 8000.
+- Conferência visual pelo navegador nesta sessão indisponível: ferramenta não iniciou por “setup refresh had errors”. Templates e respostas foram verificados nos testes; revisão visual manual ainda necessária.
+- Sem commit ou push. Preservadas alterações locais anteriores.
+
+
+## Aprovação e commit — 07/10/2026
+
+- Usuário testou e aprovou esta etapa e solicitou commit local.
+- Tela de vínculo: link “Voltar e revisar” usa account-text-link e retorna à home sem âncora.
+- Removidos os avisos abaixo do formulário e o checkbox de descarte do PDF. Ícone de lixeira junto ao nome permite remover o PDF selecionado ou guardado no rascunho.
+- CSS atualizado para v=20261007-2; collectstatic executado e web reiniciado.
+- Commit reúne fórum/moderação ainda não versionados, perfil, vínculo de ideias e contadores do Organizador. Push não solicitado.

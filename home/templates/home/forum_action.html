@@ -1,0 +1,18 @@
+{% extends "home/ideas_base.html" %}
+{% load static %}
+{% block title %}{{ title }}{% endblock %}
+{% block extra_head %}{% if is_editor %}
+<link rel="stylesheet" href="{% static 'home/vendor/quill/quill.snow.css' %}">
+<script src="{% static 'home/vendor/quill/quill.js' %}" defer></script>
+<script src="{% static 'home/js/forum-editor.js' %}?v=20261002-3" defer></script>
+{% endif %}{% endblock %}
+{% block content %}
+<h1>{{ title }}</h1>
+<form method="post" class="submit-idea-form">
+{% csrf_token %}
+{% if is_editor %}{{ editor_initial|json_script:"forum-editor-initial" }}{% endif %}
+{% include "home/form_fields.html" %}
+<button class="submit-idea-button" type="submit">{{ button_label }}</button>
+<a class="ideas-link" href="{% url 'idea_detail' idea_id %}#forum">Cancelar</a>
+</form>
+{% endblock %}

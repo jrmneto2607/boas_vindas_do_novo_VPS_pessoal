@@ -1,0 +1,30 @@
+{% if comment.removed %}
+    <p class="forum-removed">Comentário removido pelo autor.</p>
+{% else %}
+    <div class="forum-comment-card">
+    <header class="forum-comment-header">
+        <strong>{{ comment.public_name }}</strong>
+        <time datetime="{{ comment.created_at|date:'c' }}">
+            {{ comment.created_at|date:"d/m/Y H:i" }}
+        </time>
+        {% include "home/forum_moderation_actions.html" %}
+    </header>
+    {% if comment.status_label and comment.status != "published" %}
+        <p class="forum-status">
+            {{ comment.status_label }}
+        </p>
+    {% endif %}
+    <div class="forum-message">{{ comment.message_html|safe }}</div>
+    <div class="forum-comment-actions">
+        <button type="button" class="forum-icon-button" title="Copiar link" aria-label="Copiar link" data-copy-link="{% url 'idea_detail' idea.id %}?comentario={{ comment.id }}#comment-{{ comment.id }}">{% include "home/forum_icon.html" with icon="link" %}</button>
+        {% if comment.can_edit %}<a class="forum-icon-button" title="Editar" aria-label="Editar" href="{% url 'comment_edit' idea.id comment.id %}">{% include "home/forum_icon.html" with icon="edit" %}</a>{% endif %}
+        {% if comment.can_remove %}
+        <form method="post" action="{% url 'comment_remove' idea.id comment.id %}" data-confirm="Remover sua contribuição? As respostas serão preservadas.">
+            {% csrf_token %}<button class="forum-icon-button forum-icon-danger" title="Remover" aria-label="Remover" type="submit">{% include "home/forum_icon.html" with icon="remove" %}</button>
+        </form>{% endif %}
+        {% if comment.can_report %}<a class="forum-icon-button" title="Denunciar" aria-label="Denunciar" href="{% url 'comment_report' idea.id comment.id %}">{% include "home/forum_icon.html" with icon="report" %}</a>{% endif %}
+        {% if comment.github_url %}<a class="forum-icon-button" title="Ver exemplo no GitHub" aria-label="Ver exemplo no GitHub" href="{{ comment.github_url }}" target="_blank" rel="nofollow noopener noreferrer">{% include "home/forum_icon.html" with icon="github" %}</a>{% endif %}
+        {% if forum_access.can_participate and comment.can_reply %}<a class="forum-icon-button" title="Responder" aria-label="Responder" href="?ordem={{ forum_page.order }}&page={{ forum_page.number }}&responder={{ comment.id }}#forum-form">{% include "home/forum_icon.html" with icon="reply" %}</a>{% endif %}
+    </div>
+    </div>
+{% endif %}

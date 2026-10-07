@@ -1,0 +1,11 @@
+{% extends "home/ideas_base.html" %}
+{% block title %}Vincular ideia{% endblock %}
+{% block content %}<section class="account-section">
+<h1>Deseja vincular esta ideia à sua conta?</h1>
+<p>Entre na sua conta para acompanhar a ideia e seu status pelo perfil.</p>
+<p>Seus campos e o PDF ficam guardados por uma hora. Após entrar, revise e conclua o envio.</p>
+<form method="post" action="{% url 'home' %}" class="account-actions">{% csrf_token %}
+<button class="submit-idea-button" name="submission_choice" value="login">Entrar e vincular</button>
+<button class="account-secondary-button" name="submission_choice" value="anonymous">Enviar sem conta</button>
+</form><div class="account-links"><a href="{% url 'home' %}" class="account-text-link">Voltar e revisar</a></div>
+</section>{% endblock %}

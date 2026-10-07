@@ -1,0 +1,6 @@
+{% extends "admin/index.html" %}
+{% block content %}
+{% if organizer_cards %}<div class="module"><h2>Prioridades do Organizador</h2><table><tbody>
+{% for card in organizer_cards %}<tr><th scope="row"><a href="{{ card.url }}">{{ card.label }}</a></th><td>{{ card.count }}</td></tr>{% endfor %}
+</tbody></table></div>{% endif %}{{ block.super }}
+{% endblock %}

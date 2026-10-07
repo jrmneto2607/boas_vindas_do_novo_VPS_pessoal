@@ -1,0 +1,21 @@
+{% if comment.can_approve or comment.can_disable %}
+    <form method="post"
+          action="{% url 'comment_moderate' idea.id comment.id %}"
+          class="forum-moderation-actions">
+        {% csrf_token %}
+        {% if comment.can_approve %}
+            <button type="submit" name="action" value="approve"
+                    class="moderation-button moderation-approve"
+                    title="Aprovar comentário" aria-label="Aprovar comentário">
+                <span aria-hidden="true">👍</span>
+            </button>
+        {% endif %}
+        {% if comment.can_disable %}
+            <button type="submit" name="action" value="disable"
+                    class="moderation-button moderation-disable"
+                    title="Desativar comentário" aria-label="Desativar comentário">
+                <span aria-hidden="true">✕</span>
+            </button>
+        {% endif %}
+    </form>
+{% endif %}

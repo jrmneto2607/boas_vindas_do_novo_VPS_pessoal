@@ -35,7 +35,7 @@ submitIdeaForm.addEventListener("submit", function (event) {
     const selectedPdf = pdfInput.files[0];
     const githubUrl = githubInput.value.trim();
 
-    if (!selectedPdf && !githubUrl) {
+    if (!selectedPdf && !githubUrl && !(document.getElementById("saved-pdf")?.value && !submitIdeaForm.querySelector("[name=discard_pdf]")?.value)) {
         event.preventDefault();
         sourceError.hidden = false;
     } else {
@@ -52,3 +52,23 @@ githubInput.addEventListener("input", function () {
 });
 
 //FINAL DO ENVIO DE PDF DO DOFMULARIO DE ENVIO DE IDEIA
+
+const removePdfButton = document.getElementById("remove-pdf");
+const savedPdfInput = document.getElementById("saved-pdf");
+const discardPdfInput = document.getElementById("discard-pdf");
+pdfInput.addEventListener("change", () => {
+    removePdfButton.hidden = !pdfInput.files.length && !savedPdfInput.value;
+    if (!pdfInput.files.length && savedPdfInput.value) {
+        pdfFileName.textContent = savedPdfInput.value;
+    }
+});
+removePdfButton.addEventListener("click", () => {
+    pdfInput.value = "";
+    savedPdfInput.value = "";
+    discardPdfInput.value = "1";
+    pdfFileName.textContent = "Nenhum PDF selecionado";
+    pdfButtonText.textContent = "Selecionar PDF";
+    pdfButton.classList.remove("file-selected");
+    pdfFileName.classList.remove("file-name-selected");
+    removePdfButton.hidden = true;
+});

@@ -10,6 +10,8 @@ def idea_pdf_upload_path(instance, filename):
 
 # Create your models here.
 class IdeaSubmission(models.Model):
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True,
+                              on_delete=models.SET_NULL, related_name="submitted_ideas")
     author_name = models.CharField(max_length=100)
     idea_title = models.CharField(max_length=200)
     idea_description = models.TextField(blank=True, default="")
@@ -39,6 +41,7 @@ class IdeaSubmission(models.Model):
     )
 
     is_featured = models.BooleanField(default=False)
+    is_active = models.BooleanField("Ideia ativa", default=True)
 
 # PREPARANDO A ÁREA DO FORUM DE CADA IDEIA
 

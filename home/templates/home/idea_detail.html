@@ -1,26 +1,55 @@
 {% extends "home/ideas_base.html" %}
+{% load static %}
+
+{% block extra_head %}
+    <script src="{% static 'home/js/forum-actions.js' %}?v=2" defer></script>
+    {% if forum_access.can_participate %}
+        <link rel="stylesheet" href="{% static 'home/vendor/quill/quill.snow.css' %}?v=2.0.3">
+        <script src="{% static 'home/vendor/quill/quill.js' %}?v=2.0.3" defer></script>
+        <script src="{% static 'home/js/forum-editor.js' %}?v=20261002-3" defer></script>
+    {% endif %}
+{% endblock %}
 
 {% block title %}{{ idea.idea_title|default:"Detalhes da ideia" }}{% endblock %}
 
+{% block messages %}{% endblock %}
+
 {% block content %}
-    <a href="{% url 'idea_list' %}" class="ideas-link">
+    <a href="{% url 'idea_list' %}" class="ideas-link idea-back-link">
         ← Todas as ideias
     </a>
 
     <article class="idea-detail">
-        <div class="section-heading">
-            <span class="section-line"></span>
-            <span class="section-label">CONHEÇA A IDEIA</span>
+        <div class="idea-title-row">
+            <h1>{{ idea.idea_title|default:"Ideia sem título" }}</h1>
+            <button type="button" class="forum-icon-button idea-share-button"
+                    title="Compartilhar ideia" aria-label="Compartilhar ideia"
+                    data-copy-link="{% url 'idea_detail' idea.id %}">
+                {% include "home/forum_icon.html" with icon="link" %}
+            </button>
         </div>
-
-        <h1>{{ idea.idea_title|default:"Ideia sem título" }}</h1>
 
         <div class="idea-meta">
             <span class="idea-status">{{ idea.status_label }}</span>
-            <span>Autor: {{ idea.author_name|default:"Anônimo" }}</span>
-            <span>Enviada em {{ idea.created_at|date:"d/m/Y" }}</span>
+            <span>Enviado por {{ idea.author_name|default:"Anônimo" }} — {{ idea.created_at|date:"d/m/Y" }}</span>
         </div>
 
+        {% if staff_controls.can_deactivate_idea or staff_controls.can_delete_idea %}
+            <div class="idea-management-actions" aria-label="Gerenciamento da ideia">
+                {% if staff_controls.can_deactivate_idea %}
+                    <form method="post" action="{% url 'idea_deactivate' idea.id %}" data-confirm="Desativar esta ideia? Ela deixará de aparecer no site.">
+                        {% csrf_token %}
+                        <button type="submit" class="idea-button management-disable">
+                            Desativar ideia
+                        </button>
+                    </form>
+                {% endif %}
+                {% if staff_controls.can_delete_idea %}
+                    <a href="{% url 'admin:home_ideasubmission_delete' idea.id %}"
+                       class="idea-button management-delete">Excluir ideia</a>
+                {% endif %}
+            </div>
+        {% endif %}
         <section class="idea-detail-description">
             <h2>Sobre a proposta</h2>
 
@@ -63,4 +92,102 @@
             {% endif %}
         </section>
     </article>
+    <section id="forum" class="idea-detail-description">
+        <h2>Discussão da ideia</h2>
+        <div class="forum-discussion-tools">
+            <span>{{ forum_page.contribution_count }} {% if forum_page.contribution_count == 1 %}contribuição{% else %}contribuições{% endif %}</span>
+            <form method="get" action="#forum">
+                <label for="forum-order">Ordenar por</label>
+                <select id="forum-order" name="ordem">
+                    <option value="recentes" {% if forum_page.order == "recentes" %}selected{% endif %}>Mais recentes</option>
+                    <option value="antigos" {% if forum_page.order == "antigos" %}selected{% endif %}>Mais antigos</option>
+                </select>
+                <button type="submit" class="idea-button forum-text-button">Aplicar</button>
+            </form>
+        </div>
+        <p>
+            Acompanhe a conversa e contribua com sugestões,
+            dúvidas ou exemplos do projeto.
+        </p>
+        {% if staff_controls.can_moderate_comments %}
+            {% include "home/forum_notices.html" %}
+        {% endif %}
+        {% if forum_page.has_other_rejected_contributions %}
+            <p class="forum-status" role="status">
+                Uma contribuição sua nesta ideia não foi aprovada.
+            </p>
+        {% endif %}
+        <div class="forum-conversations">
+            {% for comment in forum_page %}
+                <article id="comment-{{ comment.id }}" class="forum-conversation">
+                    {% include "home/forum_comment.html" %}
+                    {% if comment.replies %}
+                        <div class="forum-replies">
+                            {% for reply in comment.replies %}
+                                <article id="comment-{{ reply.id }}" class="forum-reply">
+                                    {% include "home/forum_comment.html" with comment=reply %}
+                                </article>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </article>
+            {% empty %}
+                <p>Ainda não há contribuições disponíveis para você.</p>
+            {% endfor %}
+        </div>
+        {% if forum_page.has_other_pages %}
+            <nav class="idea-actions" aria-label="Páginas da discussão">
+                {% if forum_page.has_previous %}
+                    <a href="?ordem={{ forum_page.order }}&page={{ forum_page.previous_page_number }}#forum" class="idea-button">← Anterior</a>
+                {% endif %}
+                <span>Página {{ forum_page.number }} de {{ forum_page.paginator.num_pages }}</span>
+                {% if forum_page.has_next %}
+                    <a href="?ordem={{ forum_page.order }}&page={{ forum_page.next_page_number }}#forum" class="idea-button">Próxima →</a>
+                {% endif %}
+            </nav>
+        {% endif %}
+        <div id="forum-form">
+            {% if forum_access.can_participate %}
+                <h3>{% if reply_target %}Respondendo a {{ reply_target.public_name }}{% else %}Enviar uma contribuição{% endif %}</h3>
+                {% if reply_target %}<blockquote class="forum-reply-preview">{{ reply_target.excerpt }}</blockquote>{% endif %}
+                {% if reply_target or comment_form.parent_id.value %}
+                    <a href="{% url 'idea_detail' idea.id %}?ordem={{ forum_page.order }}&page={{ forum_page.number }}#forum-form" class="ideas-link">Cancelar resposta</a>
+                {% endif %}
+            {% endif %}
+        </div>
+        {% if not staff_controls.can_moderate_comments %}
+            {% include "home/forum_notices.html" %}
+        {% endif %}
+        {% if forum_access.can_participate %}
+            <form
+                class="submit-idea-form"
+                method="post"
+                action="{% url 'comment_create' idea.id %}#forum-form"
+            >
+                {% csrf_token %}
+                {{ editor_initial|json_script:"forum-editor-initial" }}
+                {% with form=comment_form %}
+                    {% include "home/form_fields.html" %}
+                {% endwith %}
+                <button type="submit" class="submit-idea-button">
+                    Enviar contribuição
+                </button>
+            </form>
+        {% else %}
+            <p>{{ forum_access.participation_message }}</p>
+            {% if not request.user.is_authenticated %}
+                <div class="idea-actions">
+                    <a
+                        href="{% url 'login' %}?next={{ request.path|urlencode }}"
+                        class="idea-button"
+                    >
+                        Entrar para participar
+                    </a>
+                    <a href="{% url 'register' %}" class="ideas-link">
+                        Criar conta
+                    </a>
+                </div>
+            {% endif %}
+        {% endif %}
+    </section>
 {% endblock %}

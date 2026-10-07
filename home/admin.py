@@ -1,9 +1,10 @@
 from django.contrib import admin
 from django.db import transaction
-from django.utils import timezone
+from django.core.exceptions import ValidationError
 
 from .models import IdeaSubmission
 from .models import Collaborator, Comment, CommentReport
+from .moderation_services import moderate_comment
 
 admin.site.site_header = "Administração Maflo Tech"
 admin.site.site_title = "Maflo Tech"
@@ -17,6 +18,7 @@ class IdeaSubmissionAdmin(admin.ModelAdmin):
         "author_name",
         "status",
         "is_featured",
+        "is_active",
         "created_at",
     )
 
@@ -28,12 +30,14 @@ class IdeaSubmissionAdmin(admin.ModelAdmin):
     list_filter = (
         "status",
         "is_featured",
+        "is_active",
         "created_at",
     )
 
     ordering = ("-created_at", "-pk")
 
     readonly_fields = (
+        "owner",
         "created_at",
         "idea_consent",
         "consent_version",
@@ -45,6 +49,7 @@ class IdeaSubmissionAdmin(admin.ModelAdmin):
             "fields": (
                 "idea_title",
                 "author_name",
+                "owner",
                 "idea_description",
                 "idea_pdf",
                 "idea_github",
@@ -54,6 +59,7 @@ class IdeaSubmissionAdmin(admin.ModelAdmin):
             "fields": (
                 "status",
                 "is_featured",
+                "is_active",
             ),
         }),
         ("Contato", {
@@ -179,87 +185,29 @@ class CommentAdmin(admin.ModelAdmin):
     def has_delete_permission(self, request, obj=None):
         return False
 
-    @admin.action(
-        description="Aprovar e publicar comentários selecionados",
-        permissions=["change"],
-    )
-    def approve_comments(self, request, queryset):
-        approved = 0
-
+    def _moderate_selected(self, request, queryset, action):
+        count = 0
         with transaction.atomic():
-            comments = (
-                queryset
-                .select_for_update()
-                .order_by("pk")
-            )
-
-            for comment in comments:
-                # A administração não republica conteúdo removido pelo autor.
-                if comment.removed_at is not None:
+            for comment_id, idea_id in queryset.order_by("idea_id", "pk").values_list("pk", "idea_id"):
+                try:
+                    moderate_comment(
+                        user=request.user, idea_id=idea_id,
+                        comment_id=comment_id, action=action,
+                    )
+                except ValidationError:
                     continue
+                count += 1
+        return count
 
-                comment.status = Comment.Status.PUBLISHED
-                comment.moderated_by = request.user
-                comment.moderated_at = timezone.now()
-                comment.save(update_fields=[
-                    "status",
-                    "moderated_by",
-                    "moderated_at",
-                ])
+    @admin.action(description="Aprovar e publicar comentários selecionados", permissions=["change"])
+    def approve_comments(self, request, queryset):
+        count = self._moderate_selected(request, queryset, "approve")
+        self.message_user(request, f"{count} comentário(s) aprovado(s). Comentários removidos pelo autor foram preservados.")
 
-                # As denúncias anteriores foram avaliadas nesta decisão.
-                comment.reports.filter(
-                    reviewed_at__isnull=True,
-                ).update(
-                    reviewed_at=comment.moderated_at,
-                    reviewed_by=request.user,
-                )
-
-                approved += 1
-
-        self.message_user(
-            request,
-            f"{approved} comentário(s) aprovado(s). "
-            "Comentários removidos pelo autor foram preservados.",
-        )
-
-    @admin.action(
-        description="Desativar comentários selecionados",
-        permissions=["change"],
-    )
+    @admin.action(description="Desativar comentários selecionados", permissions=["change"])
     def disable_comments(self, request, queryset):
-        disabled = 0
-
-        with transaction.atomic():
-            comments = (
-                queryset
-                .select_for_update()
-                .order_by("pk")
-            )
-
-            for comment in comments:
-                comment.status = Comment.Status.DISABLED
-                comment.moderated_by = request.user
-                comment.moderated_at = timezone.now()
-                comment.save(update_fields=[
-                    "status",
-                    "moderated_by",
-                    "moderated_at",
-                ])
-
-                comment.reports.filter(
-                    reviewed_at__isnull=True,
-                ).update(
-                    reviewed_at=comment.moderated_at,
-                    reviewed_by=request.user,
-                )
-
-                disabled += 1
-
-        self.message_user(
-            request,
-            f"{disabled} comentário(s) desativado(s).",
-        )
+        count = self._moderate_selected(request, queryset, "disable")
+        self.message_user(request, f"{count} comentário(s) desativado(s). Comentários removidos pelo autor foram preservados.")
 
 
 @admin.register(CommentReport)
@@ -300,3 +248,25 @@ class CommentReportAdmin(admin.ModelAdmin):
 
     def has_delete_permission(self, request, obj=None):
         return False
+
+_original_each_context = admin.site.each_context
+
+def organizer_context(request):
+    context = _original_each_context(request)
+    if not request.user.is_active or not request.user.is_staff:
+        return context
+    cards = []
+    def add_card(model, label, queryset, query):
+        opts = model._meta
+        if request.user.has_perm(f"{opts.app_label}.view_{opts.model_name}") or request.user.has_perm(f"{opts.app_label}.change_{opts.model_name}"):
+            from django.urls import reverse
+            cards.append({"label": label, "count": queryset.count(),
+                "url": reverse(f"admin:{opts.app_label}_{opts.model_name}_changelist") + "?" + query})
+    add_card(Comment, "Comentários aguardando aprovação", Comment.objects.filter(status="pending", removed_at__isnull=True), "status__exact=pending&removed_at__isnull=True")
+    add_card(CommentReport, "Denúncias pendentes", CommentReport.objects.filter(reviewed_at__isnull=True), "reviewed_at__isnull=True")
+    add_card(IdeaSubmission, "Ideias em análise", IdeaSubmission.objects.filter(status=1, is_active=True), "status__exact=1&is_active__exact=1")
+    context["organizer_cards"] = cards
+    return context
+
+admin.site.each_context = organizer_context
+admin.site.index_template = "admin/organizer_index.html"
